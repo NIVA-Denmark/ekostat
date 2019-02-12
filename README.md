@@ -1,2 +1,2 @@
 # ekostat
-Ekostat combined calculaion and visualization
+Ekostat combined calculation and visualization
