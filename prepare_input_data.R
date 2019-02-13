@@ -11,3 +11,10 @@ dfcmsmdi<- read_sas("data/coast_msmdi.sas7bdat")
 dfcwater<- read_sas("data/coast_watersamples.sas7bdat")
 
 
+dfcw<-bind_rows(dfcbio,dfcbqi,dfcmsmdi,dfcwater) %>%
+  mutate(Year=year(date),Month=month(date)) %>%
+  select(WB_ID=MS_CD,station,date,Year,Month,
+         Period,time,station_depth,sali,biovol,
+         obspoint,institution,BQI,depth,MSMDI,
+         DIN,DIP,TN,TP,chla,secchi,HypoxicAreaPct,O2_bot)
+
