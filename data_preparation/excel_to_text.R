@@ -2,7 +2,7 @@
 
 # xlfile   :: xlsx file to be read
 # sheet    :: worksheet containing required data
-# textfile :: [OPTIONAL] - text file to write data to 
+# textfile :: [OPTIONAL] text file to write data to 
 
 excel_to_text<-function(xlfile,sheet,textfile=""){
   require(dplyr)
