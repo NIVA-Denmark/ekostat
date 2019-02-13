@@ -7,14 +7,14 @@ Coastal	Biological	Benthic fauna	Composition and diversity	CoastBQI	BQI	X	X	X	NA
 Coastal	Biological	Benthic vegetation	Composition and abundance	CoastMSMDI	MSMDI	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Water transparency	Secchi depth	CoastSecchi	Secchi depth	X	X	X	NA	NA	NA	NA	NA
 Coastal	Supporting	Water transparency	Secchi depth	CoastSecchiEQR	Secchi depth	X	X	X	NA	NA	NA	NA	NA
-Coastal	Supporting	Nutrients	Nitrogen	CoastDINwinter	Dissolved inorganic Nitrogen	X	X	NA	NA	NA	NA	NA	NA
-Coastal	Supporting	Nutrients	Nitrogen	CoastDINwinterEQR	Dissolved inorganic Nitrogen	X	X	NA	NA	NA	NA	NA	NA
+Coastal	Supporting	Nutrients	Nitrogen	CoastDINwinter	Dissolved Inorganic Nitrogen	X	X	NA	NA	NA	NA	NA	NA
+Coastal	Supporting	Nutrients	Nitrogen	CoastDINwinterEQR	Dissolved Inorganic Nitrogen	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Nutrients	Nitrogen	CoastTNsummer	Total Nitrogen	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Nutrients	Nitrogen	CoastTNsummerEQR	Total Nitrogen	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Nutrients	Nitrogen	CoastTNwinter	Total Nitrogen	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Nutrients	Nitrogen	CoastTNwinterEQR	Total Nitrogen	X	X	NA	NA	NA	NA	NA	NA
-Coastal	Supporting	Nutrients	Phosphorus	CoastDIPwinter	Dissolved inorganic Phosphorus	X	X	NA	NA	NA	NA	NA	NA
-Coastal	Supporting	Nutrients	Phosphorus	CoastDIPwinterEQR	Dissolved inorganic Phosphorus	X	X	NA	NA	NA	NA	NA	NA
+Coastal	Supporting	Nutrients	Phosphorus	CoastDIPwinter	Dissolved Inorganic Phosphorus	X	X	NA	NA	NA	NA	NA	NA
+Coastal	Supporting	Nutrients	Phosphorus	CoastDIPwinterEQR	Dissolved Inorganic Phosphorus	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Nutrients	Phosphorus	CoastTPsummer	Total Phosphorus	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Nutrients	Phosphorus	CoastTPsummerEQR	Total Phosphorus	X	X	NA	NA	NA	NA	NA	NA
 Coastal	Supporting	Nutrients	Phosphorus	CoastTPwinter	Total Phosphorus	X	X	NA	NA	NA	NA	NA	NA
@@ -27,15 +27,15 @@ Lakes	Biological	Phytoplankton	Phytoplankton biomass	LakeChla	Chlorophyll a	X	X	
 Lakes	Biological	Phytoplankton	Phytoplankton biomass	LakeChlaEQR	Chlorophyll a	X	X	NA	NA	NA	NA	NA	NA
 Lakes	Biological	Phytoplankton	Phytoplankton composition	LakePTI	PhytoplanktonTrophicIndex	X	X	NA	NA	NA	NA	NA	NA
 Lakes	Biological	Phytoplankton	Phytoplankton composition	LakePTIEQR	PhytoplanktonTrophicIndex	X	X	NA	NA	NA	NA	NA	NA
-Lakes	Biological	Phytoplankton	Phytoplankton composition	LakeNphytspecies	Nspecies_phytoplankton	X	NA	NA	X	NA	NA	NA	NA
-Lakes	Biological	Phytoplankton	Phytoplankton composition	LakeNphytspeciesEQR	Nspecies_phytoplankton	X	NA	NA	X	NA	NA	NA	NA
+Lakes	Biological	Phytoplankton	Phytoplankton composition	LakeNphytspec	Phytoplankton species richness	X	NA	NA	X	NA	NA	NA	NA
+Lakes	Biological	Phytoplankton	Phytoplankton composition	LakeNphytspecEQR	Phytoplankton species richness	X	NA	NA	X	NA	NA	NA	NA
 Lakes	Biological	Macrophytes and phytobenthos	Macrophytes composition	LakeTMIEQR	TrophicMacrophyteIndex	X	X	NA	NA	NA	NA	NA	NA
 Lakes	Biological	Macrophytes and phytobenthos	Phytobenthos composition	LakeIPS	BenthicDiatomsIPS	X	X	X	NA	NA	NA	NA	NA
 Lakes	Biological	Macrophytes and phytobenthos	Phytobenthos composition	LakeIPSEQR	BenthicDiatomsIPS	X	X	X	NA	NA	NA	NA	NA
 Lakes	Biological	Macrophytes and phytobenthos	Phytobenthos composition	LakeACIDEQR	BenthicDiatomsACID	X	NA	NA	X	NA	NA	NA	NA
 Lakes	Biological	Benthic invertebrates	Composition and abundance	LakeASPTEQR	BenthicInvertebratesASPT	X	NA	NA	NA	NA	NA	NA	X
 Lakes	Biological	Benthic invertebrates	Composition and abundance	LakeMILAEQR	BenthicInvertebratesMILA	X	NA	NA	X	NA	NA	NA	NA
-Lakes	Biological	Benthic invertebrates	Composition and abundance	LakeBQI	BenthicInvertebratesBQI	X	X	X	NA	NA	NA	NA	NA
+Lakes	Biological	Benthic invertebrates	Composition and abundance	LakeBQIEQR	BenthicInvertebratesBQI	X	X	X	NA	NA	NA	NA	NA
 Lakes	Biological	Fish	Composition and abundance	LakeEQR8	EQR8	X	X	NA	X	NA	NA	NA	NA
 Lakes	Biological	Fish	Composition and abundance	LakeEindexW3	EindexW3	X	X	NA	NA	NA	NA	NA	NA
 Lakes	Biological	Fish	Composition and abundance	LakeAindexW5	AindexW5	X	NA	NA	X	NA	NA	NA	NA
@@ -48,9 +48,9 @@ Rivers	Biological	Macrophytes and phytobenthos	Phytobenthos composition	RiverIPS
 Rivers	Biological	Macrophytes and phytobenthos	Phytobenthos composition	RiverACIDEQR	BenthicDiatomsACID	X	NA	NA	X	NA	NA	NA	NA
 Rivers	Supporting	Macrophytes and phytobenthos	Phytobenthos composition	RiverPctPT	BenthicDiatomsPctPT	X	X	X	NA	NA	NA	NA	NA
 Rivers	Supporting	Macrophytes and phytobenthos	Phytobenthos composition	RiverTDI	BenthicDiatomsTDI	X	X	X	NA	NA	NA	NA	NA
-Rivers	Biological	Benthic invertebrates	Composition and abundance	RiverASPT	BenthicInvertebratesASPT	X	NA	NA	NA	NA	NA	NA	X
-Rivers	Biological	Benthic invertebrates	Composition and abundance	RiverDJ	BenthicInvertebratesDJ	X	X	NA	NA	NA	NA	NA	NA
-Rivers	Biological	Benthic invertebrates	Composition and abundance	RiverMISA	BenthicInvertebratesMISA	X	NA	NA	X	NA	NA	NA	NA
+Rivers	Biological	Benthic invertebrates	Composition and abundance	RiverASPTEQR	BenthicInvertebratesASPT	X	NA	NA	NA	NA	NA	NA	X
+Rivers	Biological	Benthic invertebrates	Composition and abundance	RiverDJEQR	BenthicInvertebratesDJ	X	X	NA	NA	NA	NA	NA	NA
+Rivers	Biological	Benthic invertebrates	Composition and abundance	RiverMISAEQR	BenthicInvertebratesMISA	X	NA	NA	X	NA	NA	NA	NA
 Rivers	Biological	Fish	Composition and abundance	RiverVIX	FishVIX	X	X	NA	X	NA	X	X	NA
 Rivers	Biological	Fish	Composition and abundance	RiverVIXs	FishVIXsm	X	X	NA	X	NA	X	X	NA
 Rivers	Biological	Fish	Composition and abundance	RiverVIXm	FishVIXsm	X	X	NA	X	NA	X	X	NA

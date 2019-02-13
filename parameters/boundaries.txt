@@ -1661,54 +1661,54 @@ Lakes	LakeSecchiEQR	No unit	1,2,3,4,5,6,7,8,9,10,11,12	NA	Norra Sverige >800 m	4
 Lakes	LakeSecchiEQR	No unit	1,2,3,4,5,6,7,8,9,10,11,12	NA	Norra Sverige >800 m	4DLB	Sjöar, djupa,lav alkalinitet, bruna	3	4	1	0.67	0.5	0.33	0.25	0	f(WB)	0.74	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
 Lakes	LakeSecchiEQR	No unit	1,2,3,4,5,6,7,8,9,10,11,12	NA	Norra Sverige >800 m	4DHK	Sjöar, djupa,hög alkalinitet, klara	3	4	1	0.67	0.5	0.33	0.25	0	f(WB)	0.74	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
 Lakes	LakeSecchiEQR	No unit	1,2,3,4,5,6,7,8,9,10,11,12	NA	Norra Sverige >800 m	4DHB	Sjöar, djupa,hög alkalinitet, bruna	3	4	1	0.67	0.5	0.33	0.25	0	f(WB)	0.74	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Södra Sverige	1DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige <200 m	2DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige 200-800 m	3DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
-Lakes	LakeOxygen	mg/l	7,8	NA	Norra Sverige >800 m	4DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Södra Sverige	1DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige <200 m	2DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige 200-800 m	3DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4GLK	Sjöar, grunda,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4GLB	Sjöar, grunda,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4GHK	Sjöar, grunda,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4GHB	Sjöar, grunda,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4MLK	Sjöar, mellan djup,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4MLB	Sjöar, mellan djup,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4MHK	Sjöar, mellan djup,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4MHB	Sjöar, mellan djup,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4DLK	Sjöar, djupa,lav alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4DLB	Sjöar, djupa,lav alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4DHK	Sjöar, djupa,hög alkalinitet, klara	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+Lakes	LakeOxygenSummer	mg/l	7,8	NA	Norra Sverige >800 m	4DHB	Sjöar, djupa,hög alkalinitet, bruna	3	1	10	7	5	4	2	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
 Lakes	LakepHchange	No unit	1,2,3,4,5,6,7,8,9,10,11,12	NA	Södra Sverige	1GLK	Sjöar, grunda,lav alkalinitet, klara	3	3	0	0.2	0.4	0.6	0.8	2	Wbspec	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
 Lakes	LakepHchange	No unit	1,2,3,4,5,6,7,8,9,10,11,12	NA	Södra Sverige	1GLB	Sjöar, grunda,lav alkalinitet, bruna	3	3	0	0.2	0.4	0.6	0.8	2	Wbspec	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
 Lakes	LakepHchange	No unit	1,2,3,4,5,6,7,8,9,10,11,12	NA	Södra Sverige	1GHK	Sjöar, grunda,hög alkalinitet, klara	3	3	0	0.2	0.4	0.6	0.8	2	Wbspec	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA

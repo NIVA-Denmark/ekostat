@@ -1,0 +1,67 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup,  echo=FALSE, warning=F, message=F}
+library("dplyr")
+df_bound<-read.table("boundaries.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") 
+df_bound_WB<-read.table("boundaries_WB.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") 
+df_indicators<-read.table("indicators.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") 
+df_varcomp<-read.table("varcomp.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") 
+df_var<-read.table("variables.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") 
+
+#include=FALSE,
+
+test <- df_indicators %>%
+  distinct(Water_type,Indicator) %>%
+  left_join(mutate(distinct(df_bound,Indicator),OK=1),by="Indicator") %>%
+  filter(is.na(OK)) %>% select(-OK)
+  
+
+test2 <- df_bound %>%
+  distinct(Water_type,Indicator) %>%
+  left_join(mutate(distinct(df_indicators,Indicator),OK=1),by="Indicator") %>%
+  filter(is.na(OK)) %>% select(-OK)
+
+
+test3 <- df_indicators %>%
+  distinct(Water_type,Measurement) %>%
+  left_join(mutate(distinct(df_varcomp,Water_type,Measurement),OK=1),by=c("Water_type","Measurement")) %>%
+  filter(is.na(OK)) %>% select(-OK)
+
+
+test4 <- df_varcomp %>%
+  distinct(Water_type,Measurement) %>%
+  left_join(mutate(distinct(df_indicators,Water_type,Measurement),OK=1),by=c("Water_type","Measurement")) %>%
+  filter(is.na(OK)) %>% select(-OK)
+```
+## Testing consistency between indicator and measurement names in the Excel Sheets for shinyapp
+
+### Indicators
+Indicators included in "Indicator data" sheet which are not found in "Boundaries"
+```{r test1,  echo=FALSE}
+test
+```
+Indicators included in "Boundaries" sheet which are not found in "Indicator data"
+```{r test2,  echo=FALSE}
+test2
+```
+### Variance components
+Measurements included in "Indicator data" sheet which are not found in "Varcomp"
+```{r test3,  echo=FALSE}
+test3
+```
+Measurements included in "Varcomp" sheet which are not found in "Indicator data"
+```{r test4,  echo=FALSE}
+test4
+```
+
+### Conclusions
+Boundaries for which there is/are no corresponding indicator listed in the "Indicator data" Sheet or variance component information without a related indicator are not a problem.
+
+Its more of a problem if there are indicators listed in "Indicator data" which do not have variance component information or boundary data. There are 2 river indicators for which this is the case: RiverTNsummer and RiverOxygenSummer.
+
+There is a comment from JAC in "Indicator data" that RiverTNsummer is not implemented yet.
+
