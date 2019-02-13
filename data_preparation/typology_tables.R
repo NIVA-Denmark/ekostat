@@ -6,6 +6,10 @@ library(RSQLite)
 # example link to VISS
 # http://viss.lansstyrelsen.se/Waters.aspx?waterMSCD=WA57943788
 
+# ------------------ database path --------------------------------------------------
+dbpath<-"../efs/ekostat/ekostat3.db"
+writeToDB=F
+
 # -------------------- Read tyoplogy information from DropBox -----------------------
 
 datafolder<-"C:/Users/CJM/Dropbox/WATERS_tools/tables_for_waters_tool/new_typologies/"
@@ -143,16 +147,16 @@ df_EU_CD <- df_EU_CD %>%
 
 
 # ------------------ write tables to database ---------------------------------------
-dbpath<-"../efs/ekostat/ekostat3.db"
+if(writeToDB){
+  db <- dbConnect(SQLite(), dbname=dbpath)
+  dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
+  dbWriteTable(conn=db,name="WB_mun",df_mun,overwrite=T,append=F,row.names=FALSE)
+  dbWriteTable(conn=db,name="WB_lan",df_lan,overwrite=T,append=F,row.names=FALSE)
+  dbWriteTable(conn=db,name="WB_EU",df_EU_CD,overwrite=T,append=F,row.names=FALSE)
 
-db <- dbConnect(SQLite(), dbname=dbpath)
-dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
-dbWriteTable(conn=db,name="WB_mun",df_mun,overwrite=T,append=F,row.names=FALSE)
-dbWriteTable(conn=db,name="WB_lan",df_lan,overwrite=T,append=F,row.names=FALSE)
-dbWriteTable(conn=db,name="WB_EU",df_EU_CD,overwrite=T,append=F,row.names=FALSE)
-
-res<-dbExecute(conn=db,"CREATE INDEX `idx_WB_Lan` ON `WB_Lan` ( `WB_ID` ASC )")
-res<-dbExecute(conn=db,"CREATE INDEX `idx_WB_Mun` ON `WB_Mun` ( `WB_ID` )")
-res<-dbExecute(conn=db,"CREATE INDEX `idx_WB_EU` ON `WB_EU` ( `WB_ID` )")
-res<-dbExecute(conn=db,"CREATE UNIQUE INDEX `idx_WB_info` ON `WB_info` ( `WB_ID` ASC )")
-dbDisconnect(db)
+  res<-dbExecute(conn=db,"CREATE INDEX `idx_WB_Lan` ON `WB_Lan` ( `WB_ID` ASC )")
+  res<-dbExecute(conn=db,"CREATE INDEX `idx_WB_Mun` ON `WB_Mun` ( `WB_ID` )")
+  res<-dbExecute(conn=db,"CREATE INDEX `idx_WB_EU` ON `WB_EU` ( `WB_ID` )")
+  res<-dbExecute(conn=db,"CREATE UNIQUE INDEX `idx_WB_info` ON `WB_info` ( `WB_ID` ASC )")
+  dbDisconnect(db)
+}
