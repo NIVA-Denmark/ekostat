@@ -5,8 +5,8 @@
 #' Loop through Waterbodies and Call individual Assessment routine for each WB
 #'
 
-
-AssessmentMultiple<-function(wblist,df,outputdb,IndList,df_bounds,df_bounds_WB,df_bathy,df_indicators,df_variances,bReplaceResults=T){
+                            
+AssessmentMultiple<-function(wblist,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,bReplaceResults=T){
   
   if(bReplaceResults){
     bOVR<-TRUE
@@ -24,7 +24,9 @@ AssessmentMultiple<-function(wblist,df,outputdb,IndList,df_bounds,df_bounds_WB,d
     dfselect<-df %>% filter(WB_ID == wblist$WB_ID[iWB])
     cat(paste0(wblist$CLR[iWB]," WB: ",wblist$WB_ID[iWB]," (",iWB," of ",wbcount ,")\n"))
     
-    AssessmentResults <- Assessment(dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_bathy,df_indicators,df_variances)
+    typology<-wblist$Type[iWB]
+
+        AssessmentResults <- Assessment(dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology)
     
     ETA <- Sys.time() + (Sys.time() - start_time)*wbcount/(wbcount-iWB)
     cat(paste0("Time: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
@@ -64,15 +66,14 @@ AssessmentMultiple<-function(wblist,df,outputdb,IndList,df_bounds,df_bounds_WB,d
 #' @examples
 #' 
 #' 
-#' 
+#'             
 Assessment <-
-  function(df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_bathy,df_indicators,df_variances) {
-    
-    df_all$typology<-gsub("SE_", "", df_all$typology)
+  function(df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology) {
+    #df_all$Type<-gsub("SE_", "", df_all$Type)
 
     df_months<- df_bounds %>% distinct(Indicator,Type,Months)
     
-    wblist<-distinct(df_all,WB_ID,typology)
+    wblist<-distinct(df_all,WB_ID,Type)
     wbcount<-nrow(wblist)
     progfrac= 1/(wbcount*3*length(IndicatorList))
     
@@ -83,7 +84,9 @@ Assessment <-
       df_temp<-df_all %>% filter(WB_ID == wblist$WB_ID[iWB])
       plist<-distinct(df_all,period)
       pcount<-nrow(plist)
-      typology<-as.character(df_temp[1,"Type"])
+      #typology<-as.character(df_temp[1,"Type"])
+      #browser()
+      
       if(is.null(df_temp$typology_varcomp)){
         typology_varcomp<-typology
       }else{
@@ -598,3 +601,4 @@ hms_span <- function(start, end) {
       formatC(x, width = 2, format = "d", flag = "0")
     }), collapse = ":")
 }
+
