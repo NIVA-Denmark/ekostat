@@ -1,21 +1,78 @@
+#  -------------------------------------------------------------------
+#' ------ AssessmentMultiple ----------------------------------------
+#' -------------------------------------------------------------------
+#' 
+#' Loop through Waterbodies and Call individual Assessment routine for each WB
+#'
+
+
+AssessmentMultiple<-function(wblist,df,outputdb,IndList,df_bounds,df_bounds_WB,df_bathy,df_indicators,df_variances,bReplaceResults=T){
+  
+  if(bReplaceResults){
+    bOVR<-TRUE
+    bAPP<-FALSE
+  }else{
+    bOVR<-FALSE
+    bAPP<-TRUE
+  }
+  
+  wbcount<-nrow(wblist)
+  
+  for(iWB in 1:wbcount){
+    #for(iWB in 1:1){
+    
+    dfselect<-df %>% filter(WB_ID == wblist$WB_ID[iWB])
+    cat(paste0(wblist$CLR[iWB]," WB: ",wblist$WB_ID[iWB]," (",iWB," of ",wbcount ,")\n"))
+    
+    AssessmentResults <- Assessment(dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_bathy,df_indicators,df_variances)
+    
+    ETA <- Sys.time() + (Sys.time() - start_time)*wbcount/(wbcount-iWB)
+    cat(paste0("Time: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
+    
+    resAvg <- AssessmentResults[[1]]
+    resMC <- AssessmentResults[[2]]
+    resErr <- AssessmentResults[[3]]
+    resYear <- AssessmentResults[[4]]
+    db <- dbConnect(SQLite(), dbname=outputdb)
+    
+    if(!is.na(resAvg)){
+      WB <- resAvg %>% group_by(WB_ID,Type,Period,Region,Typename) %>% summarise()
+      dbWriteTable(conn = db, name = "resMC", resMC, overwrite=bOVR,append=bAPP, row.names=FALSE)
+      dbWriteTable(conn = db, name = "resYear", resYear, overwrite=bOVR,append=bAPP, row.names=FALSE)
+      dbWriteTable(conn = db, name = "WB", WB, overwrite=bOVR,append=bAPP, row.names=FALSE)
+      dbWriteTable(conn = db, name = "data", dfselect, overwrite=bOVR,append=bAPP, row.names=FALSE)
+      dbWriteTable(conn = db, name = "resAvg", resAvg, overwrite=bOVR,append=bAPP, row.names=FALSE)
+    }
+    dbWriteTable(conn = db, name = "resErr", resErr, overwrite=bOVR,append=bAPP, row.names=FALSE)
+    dbDisconnect(db)
+    
+    bOVR<-FALSE
+    bAPP<-TRUE
+    
+  }}
+#-------------------------------------------------------------------
+#' ------ Assessment ------------------------------------------------
+#'------------------------------------------------------------------
 
 #' Run Indicator Calculations for a single waterbody 
 #' 
 #' 
 #' @param nsim Number of iterations for Monte Carlo simulation 
-#'   
-#' @param df.all 
+#' @param df_all 
 #' @param IndicatorList 
 #' 
 #' @examples
+#' 
+#' 
+#' 
 Assessment <-
-  function(df.all,nsim=1000,IndicatorList,df_bounds,df_bounds_hypox,df_bathy,df_indicators,df_variances) {
+  function(df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_bathy,df_indicators,df_variances) {
     
-    df.all$typology<-gsub("SE_", "", df.all$typology)
+    df_all$typology<-gsub("SE_", "", df_all$typology)
 
-    df.months<- df_bounds %>% distinct(Indicator,Type,Months)
+    df_months<- df_bounds %>% distinct(Indicator,Type,Months)
     
-    wblist<-distinct(df.all,WB,typology)
+    wblist<-distinct(df_all,WB_ID,typology)
     wbcount<-nrow(wblist)
     progfrac= 1/(wbcount*3*length(IndicatorList))
     
@@ -23,21 +80,21 @@ Assessment <-
 
     for(iWB in 1:wbcount){
       #cat(paste0("WB: ",wblist$WB[iWB]," (",iWB," of ",wbcount ,")\n"))
-      df.temp<-df.all %>% filter(WB == wblist$WB[iWB])
-      plist<-distinct(df.all,period)
+      df_temp<-df_all %>% filter(WB_ID == wblist$WB_ID[iWB])
+      plist<-distinct(df_all,period)
       pcount<-nrow(plist)
-      typology<-as.character(df.temp[1,"typology"])
-      if(is.null(df.temp$typology_varcomp)){
+      typology<-as.character(df_temp[1,"Type"])
+      if(is.null(df_temp$typology_varcomp)){
         typology_varcomp<-typology
       }else{
-        typology_varcomp<-as.character(df.temp[1,"typology_varcomp"])
+        typology_varcomp<-as.character(df_temp[1,"typology_varcomp"])
       }
       # coast, lake or river
-      CLR<-as.character(df.temp[1,"CLR"])
+      CLR<-as.character(df_temp[1,"CLR"])
       
       for(iPeriod in 1:pcount){
         
-        dfp <- df.all %>% filter(WB == wblist$WB[iWB],period == plist$period[iPeriod])
+        dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],period == plist$period[iPeriod])
         #cat(paste0("WB: ",wblist$WB[iWB]," (",iWB," of ",wbcount ,")  Period: ",plist$period[iPeriod],"\n"))
         cat(paste0("  Period: ",plist$period[iPeriod]," \n"))
         
@@ -74,14 +131,14 @@ Assessment <-
             bHypoxicBoundsErr<-FALSE
             if (iInd %in% c("CoastHypoxicArea")) {
               
-              WB_bathymetry <<- df_bathy %>% filter(WB==wblist$WB[iWB]) %>% select(area_pct,depth)
+              WB_bathymetry <<- df_bathy %>% filter(WB_ID==wblist$WB_ID[iWB]) %>% select(area_pct,depth)
               if(!nrow(WB_bathymetry)>0){
                 # CoastHypoxicArea - No bathy inf
                 bHypoxicBoundsErr<-TRUE
               }
               
-              BoundariesHypoxicArea <<- df_bounds_hypox %>% filter(WB==wblist$WB[iWB]) %>% select(Worst,P.B,M.P,G.M,H.G,RefCond) %>% as.list()
-              if(!nrow(df_bounds_hypox %>% filter(WB==wblist$WB[iWB]))>0){
+              BoundariesHypoxicArea <<- df_bounds_WB %>% filter(MS_CD==wblist$WB_ID[iWB]) %>% select(Worst,P.B,M.P,G.M,H.G,RefCond) %>% as.list()
+              if(!nrow(df_bounds_WB %>% filter(MS_CD==wblist$WB_ID[iWB]))>0){
                 # CoastHypoxicArea - No WB-specific bounds
                 bHypoxicBoundsErr<-TRUE
               }
@@ -96,69 +153,69 @@ Assessment <-
             if(res$result_code %in% c(0,-1)){
               
               #Period average results
-              rm(df.temp)
-              df.temp<-data.frame(Mean=res$period$mean,StdErr=res$period$stderr,Code=res$result_code)
-              df.temp$Indicator<-iInd
-              df.temp$IndSubtype<-subtype
-              df.temp$WB<-wblist$WB[iWB]
-              df.temp$Type<-wblist$typology[iWB]
-              df.temp$Period<-plist$period[iPeriod]
-              df.temp$Code<-res$result_code
+              rm(df_temp)
+              df_temp<-data.frame(Mean=res$period$mean,StdErr=res$period$stderr,Code=res$result_code)
+              df_temp$Indicator<-iInd
+              df_temp$IndSubtype<-subtype
+              df_temp$WB_ID<-wblist$WB_ID[iWB]
+              df_temp$Type<-wblist$typology[iWB]
+              df_temp$Period<-plist$period[iPeriod]
+              df_temp$Code<-res$result_code
               #cat(paste0("Indicator: ",iInd,"  Result: ",res$result_code,"\n"))
               
-              if(exists("res.ind")){
-                res.ind<-bind_rows(res.ind,df.temp)
+              if(exists("res_ind")){
+                res_ind<-bind_rows(res_ind,df_temp)
               }else{
-                res.ind<-df.temp
+                res_ind<-df_temp
               }
 
               #Year average results
-              rm(df.temp)
+              rm(df_temp)
               
-              df.temp<-data.frame(Year=res$annual$year,Mean=res$annual$mean,StdErr=res$annual$stderr)
-              df.temp$Indicator<-iInd
-              df.temp$IndSubtype<-subtype
-              df.temp$WB<-wblist$WB[iWB]
-              df.temp$Type<-wblist$typology[iWB]
-              df.temp$Period<-plist$period[iPeriod]
-              df.temp$Code<-res$result_code
+              df_temp<-data.frame(Year=res$annual$year,Mean=res$annual$mean,StdErr=res$annual$stderr)
+              df_temp$Indicator<-iInd
+              df_temp$IndSubtype<-subtype
+              df_temp$WB_ID<-wblist$WB_ID[iWB]
+              df_temp$Type<-wblist$typology[iWB]
+              df_temp$Period<-plist$period[iPeriod]
+              df_temp$Code<-res$result_code
               #browser()
-              if(exists("res.year")){
-                res.year<-bind_rows(res.year,df.temp)
+              if(exists("res_year")){
+                res_year<-bind_rows(res_year,df_temp)
               }else{
-                res.year<-df.temp
+                res_year<-df_temp
               }
               
               #Monte Carlo results
-              rm(df.temp)
-              df.temp<-data.frame(Estimate=res$indicator_sim,Code=res$result_code)
-              df.temp$Indicator<-iInd
-              df.temp$IndSubtype<-subtype
-              df.temp$WB<-wblist$WB[iWB]
-              df.temp$Type<-wblist$typology[iWB]
-              df.temp$Period<-plist$period[iPeriod]
-              df.temp$sim<-1:nsim
-              df.temp$Code<-res$result_code
+              rm(df_temp)
+              df_temp<-data.frame(Estimate=res$indicator_sim,Code=res$result_code)
+              df_temp$Indicator<-iInd
+              df_temp$IndSubtype<-subtype
+              df_temp$WB_ID<-wblist$WB_ID[iWB]
+              df_temp$Type<-wblist$typology[iWB]
+              df_temp$Period<-plist$period[iPeriod]
+              df_temp$sim<-1:nsim
+              df_temp$Code<-res$result_code
               
-              if(exists("res.rnd")){
-                res.rnd<-bind_rows(res.rnd,df.temp)
+              if(exists("res_rnd")){
+                res_rnd<-bind_rows(res_rnd,df_temp)
               }else{
-                res.rnd<-df.temp
+                res_rnd<-df_temp
               }
               
               if(res$result_code==-1){
                 ErrDesc<-"data <3years"
-                df.temp<-data.frame(WB=wblist$WB[iWB],
+                df_temp<-data.frame(WB_ID=wblist$WB_ID[iWB],
                                     Type=wblist$typology[iWB],
                                     Period=plist$period[iPeriod],
                                     Indicator=iInd,
                                     IndSubtype=subtype,
                                     Code=res$result_code,
                                     Error=ErrDesc)
-                if(exists("res.err")){
-                  res.err<-bind_rows(res.err,df.temp)
+                if(exists("res_err")){
+                  res_err<-bind_rows(res_err,df_temp)
                 }else{
-                  res.err<-df.temp
+                  res_err<-df_temp
                 }
               }
               
@@ -169,75 +226,75 @@ Assessment <-
               if(res$result_code==-90) ErrDesc<-"no data"
               if(res$result_code==-91) ErrDesc<-"insufficient data"
               if(res$result_code==-95) ErrDesc<-"missing boundary values" 
-              rm(df.temp)
-              df.temp<-data.frame(Mean=NA,StdErr=NA,Code=res$result_code)
-              df.temp$Indicator<-iInd
-              df.temp$IndSubtype<-subtype
-              df.temp$WB<-wblist$WB[iWB]
-              df.temp$Type<-wblist$typology[iWB]
-              df.temp$Period<-plist$period[iPeriod]
-              df.temp$Code<-res$result_code
+              rm(df_temp)
+              df_temp<-data.frame(Mean=NA,StdErr=NA,Code=res$result_code)
+              df_temp$Indicator<-iInd
+              df_temp$IndSubtype<-subtype
+              df_temp$WB_ID<-wblist$WB_ID[iWB]
+              df_temp$Type<-wblist$typology[iWB]
+              df_temp$Period<-plist$period[iPeriod]
+              df_temp$Code<-res$result_code
               
-              if(exists("res.ind")){
-                res.ind<-bind_rows(res.ind,df.temp)
+              if(exists("res_ind")){
+                res_ind<-bind_rows(res_ind,df_temp)
               }else{
-                res.ind<-df.temp
+                res_ind<-df_temp
               }
               #Year average results
-              rm(df.temp)
+              rm(df_temp)
               
               ps<-plist$period[iPeriod]
               y1<-as.numeric(substr(ps,1,4))
               y2<-as.numeric(substr(ps,6,9))
               years<-seq(y1,y2,1)
               
-              df.temp<-data.frame(Year=years)
-              df.temp$Mean<-NA
-              df.temp$StdErr<-NA
-              df.temp$Indicator<-iInd
-              df.temp$IndSubtype<-subtype
-              df.temp$WB<-wblist$WB[iWB]
-              df.temp$Type<-wblist$typology[iWB]
-              df.temp$Period<-plist$period[iPeriod]
-              df.temp$Code<-res$result_code
+              df_temp<-data.frame(Year=years)
+              df_temp$Mean<-NA
+              df_temp$StdErr<-NA
+              df_temp$Indicator<-iInd
+              df_temp$IndSubtype<-subtype
+              df_temp$WB_ID<-wblist$WB_ID[iWB]
+              df_temp$Type<-wblist$typology[iWB]
+              df_temp$Period<-plist$period[iPeriod]
+              df_temp$Code<-res$result_code
               
-              if(exists("res.year")){
-                res.year<-bind_rows(res.year,df.temp)
+              if(exists("res_year")){
+                res_year<-bind_rows(res_year,df_temp)
               }else{
-                res.year<-df.temp
+                res_year<-df_temp
               }
               
               
-              df.temp<-data.frame(WB=wblist$WB[iWB],
+              df_temp<-data.frame(WB_ID=wblist$WB_ID[iWB],
                                   Type=wblist$typology[iWB],
                                   Period=plist$period[iPeriod],
                                   Indicator=iInd,
                                   IndSubtype=subtype,
                                   Code=res$result_code,
                                   Error=ErrDesc)
-              if(exists("res.err")){
-                res.err<-bind_rows(res.err,df.temp)
+              if(exists("res_err")){
+                res_err<-bind_rows(res_err,df_temp)
               }else{
-                res.err<-df.temp
+                res_err<-df_temp
               }
               
               #Add empty lines to the MC results for the indicators with no data
-              rm(df.temp)
+              rm(df_temp)
               Estimate <- rep(NA,nsim)
-              df.temp<-data.frame(Estimate)
-              df.temp$Code=res$result_code
-              df.temp$Indicator<-iInd
-              df.temp$IndSubtype<-subtype
-              df.temp$WB<-wblist$WB[iWB]
-              df.temp$Type<-wblist$typology[iWB]
-              df.temp$Period<-plist$period[iPeriod]
-              df.temp$sim<-1:nsim
-              df.temp$Code<-res$result_code
+              df_temp<-data.frame(Estimate)
+              df_temp$Code=res$result_code
+              df_temp$Indicator<-iInd
+              df_temp$IndSubtype<-subtype
+              df_temp$WB_ID<-wblist$WB_ID[iWB]
+              df_temp$Type<-wblist$typology[iWB]
+              df_temp$Period<-plist$period[iPeriod]
+              df_temp$sim<-1:nsim
+              df_temp$Code<-res$result_code
               
-              if(exists("res.rnd")){
-                res.rnd<-bind_rows(res.rnd,df.temp)
+              if(exists("res_rnd")){
+                res_rnd<-bind_rows(res_rnd,df_temp)
               }else{
-                res.rnd<-df.temp
+                res_rnd<-df_temp
               }
               
             }
@@ -247,17 +304,17 @@ Assessment <-
           # no matching indicator boundaries - nrow(BoundsList)>0
           cat(paste0(" -> no boundary values (Indicator: ",iInd,", type:",wblist$typology[iWB],")\n"))
           ErrDesc<-"missing boundary values"
-          df.temp<-data.frame(WB=wblist$WB[iWB],
+          df_temp<-data.frame(WB_ID=wblist$WB_ID[iWB],
                               Type=wblist$typology[iWB],
                               Period=plist$period[iPeriod],
                               Indicator=iInd,
                               IndSubtype="",
                               Code=-96,
                               Error=ErrDesc)
-          if(exists("res.err")){
-            res.err<-bind_rows(res.err,df.temp)
+          if(exists("res_err")){
+            res_err<-bind_rows(res_err,df_temp)
           }else{
-            res.err<-df.temp
+            res_err<-df_temp
           }
           
         }
@@ -267,32 +324,32 @@ Assessment <-
     #---------------------- Summarise results --------------------------
     # Get indicator categories based on mean values
     
-    if(exists("res.ind")){
-    res.ind<- res.ind %>% select(WB,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code)
-    res.ind<- res.ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
-    res.ind$Value<-res.ind$Mean
+    if(exists("res_ind")){
+    res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code)
+    res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    res_ind$Value<-res_ind$Mean
     
     #We now have some duplicates for BQI because there are different
     
     # Do we show mean concentrations where the indicator is EQR value?
-    res.ind<-GetClass(res.ind)
+    res_ind<-GetClass(res_ind)
     
     # Get indicator categories for MC results
-    res.rnd<- res.rnd %>% select(WB,Type,Period,Indicator,IndSubtype,sim,Estimate,Code)
+    res_rnd<- res_rnd %>% select(WB_ID,Type,Period,Indicator,IndSubtype,sim,Estimate,Code)
     
-    res.rnd<- res.rnd %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
-    names(res.rnd)[names(res.rnd)=="Estimate"]<-"Value"
+    res_rnd<- res_rnd %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    names(res_rnd)[names(res_rnd)=="Estimate"]<-"Value"
     
-    #res.rnd$Value<-ifelse(res.rnd$UseEQR==1,(res.rnd$Estimate/res.rnd$Ref),res.rnd$Estimate)
-    res.rnd<-GetClass(res.rnd)
-    #cat(paste0("Sim results: ",nrow(res.rnd),"\n"))
+    #res_rnd$Value<-ifelse(res_rnd$UseEQR==1,(res_rnd$Estimate/res_rnd$Ref),res_rnd$Estimate)
+    res_rnd<-GetClass(res_rnd)
+    #cat(paste0("Sim results: ",nrow(res_rnd),"\n"))
     
-    res.rnd <- res.rnd %>% left_join(select(df_indicators,Indicator,QualityElement,QualitySubelement,QEtype),
+    res_rnd <- res_rnd %>% left_join(select(df_indicators,Indicator,QualityElement,QualitySubelement,QEtype),
                                      by=c("Indicator"))
     
     #Find counts for each category
-    res.rnd.count <- res.rnd %>% filter(!is.na(ClassID)) %>%
-      group_by(WB,Period,Type,Indicator,IndSubtype,ClassID) %>% summarise(n=n())
+    res_rnd_count <- res_rnd %>% filter(!is.na(ClassID)) %>%
+      group_by(WB_ID,Period,Type,Indicator,IndSubtype,ClassID) %>% summarise(n=n())
     
     # Here we add zeros for ClassIDs which don't occur
     # this ensures that all 5 columns are present after transposing
@@ -302,45 +359,45 @@ Assessment <-
     ClassID$X<-1
     
       
-    res.rnd.distinct <- res.rnd %>% 
-      group_by(WB,Period,Type,Indicator,IndSubtype) %>% 
+    res_rnd_distinct <- res_rnd %>% 
+      group_by(WB_ID,Period,Type,Indicator,IndSubtype) %>% 
       summarise() %>%
       ungroup() %>%
       mutate(X=1) %>%
       left_join(ClassID,by=c("X")) %>%
       select(-X)
     
-    if(nrow(res.rnd.count)==0){
-      res.rnd.count <- res.rnd.distinct %>% mutate(n=NA)
+    if(nrow(res_rnd_count)==0){
+      res_rnd_count <- res_rnd_distinct %>% mutate(n=NA)
     }else{
-      res.rnd.count <- res.rnd.distinct %>%
-        left_join(res.rnd.count,by = c("WB", "Period", "Type", "Indicator", "IndSubtype", "ClassID"))
+      res_rnd_count <- res_rnd_distinct %>%
+        left_join(res_rnd_count,by = c("WB_ID", "Period", "Type", "Indicator", "IndSubtype", "ClassID"))
     }
     
-    res.rnd.count$ClassID<-paste0("C",res.rnd.count$ClassID)
-    res.rnd.count$n <- res.rnd.count$n/nsim
+    res_rnd_count$ClassID<-paste0("C",res_rnd_count$ClassID)
+    res_rnd_count$n <- res_rnd_count$n/nsim
     #browser()
     
-    res.rnd.count<-spread(res.rnd.count, ClassID, n, fill = NA)
+    res_rnd_count<-spread(res_rnd_count, ClassID, n, fill = NA)
   
-    #res.rnd<-res.rnd %>% left_join(res.ind, by=c("Indicator","QualityElement","QualitySubelement","QEtype")) %>% select(-c(Sali_0:Sali_36))
+    #res_rnd<-res_rnd %>% left_join(res_ind, by=c("Indicator","QualityElement","QualitySubelement","QEtype")) %>% select(-c(Sali_0:Sali_36))
     
-    res.rnd<-res.rnd %>% left_join(select(res.ind,WB,Type,Period,Indicator,IndSubtype,Mean,StdErr,EQRavg=EQR,ClassAvg=Class), 
-                                   by=c("WB"="WB","Type"="Type","Period"="Period",
+    res_rnd<-res_rnd %>% left_join(select(res_ind,WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,EQRavg=EQR,ClassAvg=Class), 
+                                   by=c("WB_ID"="WB_ID","Type"="Type","Period"="Period",
                                      "Indicator"="Indicator","IndSubtype"="IndSubtype")) %>% 
       select(-c(Sali_0:Sali_36))
     Categories<-c("Bad","Poor","Mod","Good","High","Ref")
-    res.rnd$Class<-Categories[res.rnd$ClassID]
+    res_rnd$Class<-Categories[res_rnd$ClassID]
     
-    res.ind<-left_join(res.ind,res.rnd.count,by = c("WB", "Type", "Period", "Indicator", "IndSubtype"))
+    res_ind<-left_join(res_ind,res_rnd_count,by = c("WB_ID", "Type", "Period", "Indicator", "IndSubtype"))
     
-    res.ind <- res.ind %>% left_join(select(df_indicators,Indicator,QualityElement,QualitySubelement,QEtype),by = "Indicator")
+    res_ind <- res_ind %>% left_join(select(df_indicators,Indicator,QualityElement,QualitySubelement,QEtype),by = "Indicator")
     
-    names(res.ind)[names(res.ind)=="C1"]<-"fBad"
-    names(res.ind)[names(res.ind)=="C2"]<-"fPoor"
-    names(res.ind)[names(res.ind)=="C3"]<-"fMod"
-    names(res.ind)[names(res.ind)=="C4"]<-"fGood"
-    names(res.ind)[names(res.ind)=="C5"]<-"fHigh"
+    names(res_ind)[names(res_ind)=="C1"]<-"fBad"
+    names(res_ind)[names(res_ind)=="C2"]<-"fPoor"
+    names(res_ind)[names(res_ind)=="C3"]<-"fMod"
+    names(res_ind)[names(res_ind)=="C4"]<-"fGood"
+    names(res_ind)[names(res_ind)=="C5"]<-"fHigh"
 
     res<-list(data.frame)
     
@@ -349,20 +406,20 @@ Assessment <-
     Note<-data.frame(Code,Note,stringsAsFactors=FALSE)
   
     #Indicators
-    res[[1]] <-res.ind %>% left_join(Note, by="Code")#%>% select(WB,Type,Period,QualityElement,QualitySubelement,Indicator,Mean,StdErr,EQR,Class,fBad,fPoor,fMod,fGood,fHigh )
-    res[[2]]<-res.rnd %>% left_join(Note, by="Code")
-    if(!exists("res.err")){
-      res.err<-data.frame(WB=NA,Type=NA,Period=NA,Indicator=NA,
+    res[[1]] <-res_ind %>% left_join(Note, by="Code")#%>% select(WB_ID,Type,Period,QualityElement,QualitySubelement,Indicator,Mean,StdErr,EQR,Class,fBad,fPoor,fMod,fGood,fHigh )
+    res[[2]]<-res_rnd %>% left_join(Note, by="Code")
+    if(!exists("res_err")){
+      res_err<-data.frame(WB_ID=NA,Type=NA,Period=NA,Indicator=NA,
                           IndSubtype=NA,Code=NA,Error=NA)
     }
-    res[[3]]<-res.err
-    res[[4]]<-res.year
+    res[[3]]<-res_err
+    res[[4]]<-res_year
     }else{
       # no results
       res<-list(data.frame)
       res[[1]]<-NA
       res[[2]]<-NA
-      res[[3]]<-res.err
+      res[[3]]<-res_err
       res[[4]]<-NA
     }
     
@@ -438,16 +495,16 @@ SalinityReferenceValues <- function(df_bounds,typology,indicator,missing=1){
 #' IndicatorMonths
 #' 
 #' 
-IndicatorMonths <- function(df.months,typology,indicator){
+IndicatorMonths <- function(df_months,typology,indicator){
   
-  df.months<-df.months %>% filter(Indicator==indicator)
+  df_months<-df_months %>% filter(Indicator==indicator)
   #Are there different combinations of months for this indicator
-  n <- nrow(summarise(group_by(df.months,Months),n=n()))
+  n <- nrow(summarise(group_by(df_months,Months),n=n()))
   if(n>1){
     #If so, then filter the boundary data by typology
-    df.months<-df.months %>% filter(Indicator==indicator,Type==typology)
+    df_months<-df_months %>% filter(Indicator==indicator,Type==typology)
   }
-  months<-df.months[1,"Months"]
+  months<-df_months[1,"Months"]
   if(is.na(months)){months<-"1,2,3,4,5,6,7,8,9,10,11,12"}
   if(months=="1,2,..,12"){months<-"1,2,3,4,5,6,7,8,9,10,11,12"}
   months<-lapply(strsplit(months, ","),function(x) as.numeric(x))[[1]]
@@ -496,9 +553,9 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
                     TNsummer     = 50,
                     TNwinter     = 50
   )
-  df.months<- df_bounds %>% distinct(Indicator,Type,Months)
+  df_months<- df_bounds %>% distinct(Indicator,Type,Months)
   RefCond_sali<-SalinityReferenceValues(df_bounds,typology,indicator,missing)
-  MonthInclude <- IndicatorMonths(df.months,typology,indicator)
+  MonthInclude <- IndicatorMonths(df_months,typology,indicator)
   
   variance_list<- VarianceComponents(df_indicators,df_variances,typology_varcomp,indicator)
   #cat(paste0(indicator,"\n"))
