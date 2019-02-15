@@ -20,13 +20,19 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
   
   for(iWB in 1:wbcount){
     #for(iWB in 1:1){
+    WB<-wblist$WB_ID[iWB]
+    dfselect<-df %>% filter(WB_ID == WB)
     
-    dfselect<-df %>% filter(WB_ID == wblist$WB_ID[iWB])
-    
-    cat(paste0(wblist$Category[iWB]," WB: ",wblist$WB_ID[iWB]," (",iWB," of ",wbcount ,")\n"))
-    typology<-wblist$Type[iWB]
+    cat(paste0(wblist$Category[iWB]," WB: ",WB," (",iWB," of ",wbcount ,")\n"))
     CLR<-wblist$CLR[iWB]
-        AssessmentResults <- Assessment(CLR,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology)
+    typology<-wblist$Type[iWB]
+    if(CLR=="Coast"){
+      typology_varcomp<-typology
+    }else{
+      typology_varcomp<-wblist$Type_region[iWB]
+    }
+    
+        AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp)
     
     ETA <- Sys.time() + (Sys.time() - start_time)*wbcount/(wbcount-iWB)
     cat(paste0("Time: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
@@ -68,35 +74,36 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
 #' 
 #'             
 Assessment <-
-  function(CLR,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology) {
+  function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp) {
     #df_all$Type<-gsub("SE_", "", df_all$Type)
     pcount<-nrow(plist)
     df_months<- df_bounds %>% distinct(Indicator,Type,Months)
     cat(paste0(names(df_all),"\n"))
-    wblist<-distinct(df_all,WB_ID,Type)
-    wbcount<-nrow(wblist)
-    progfrac= 1/(wbcount*3*length(IndicatorList))
+    #wblist<-distinct(df_all,WB_ID,Type)
+    #wbcount<-nrow(wblist)
+    #progfrac= 1/(wbcount*3*length(IndicatorList))
     
     # Loop through distinct waterbodies and periods in the data
 
-    for(iWB in 1:wbcount){
+    #for(iWB in 1:wbcount){
       #cat(paste0("WB: ",wblist$WB[iWB]," (",iWB," of ",wbcount ,")\n"))
-      df_temp<-df_all %>% filter(WB_ID == wblist$WB_ID[iWB])
+      #df_temp<-df_all %>% filter(WB_ID == wblist$WB_ID[iWB])
       #plist<-distinct(df_all,period)
       #pcount<-nrow(plist)
       #typology<-as.character(df_temp[1,"Type"])
 
-      if(is.null(df_temp$typology_varcomp)){
-        typology_varcomp<-typology
-      }else{
-        typology_varcomp<-as.character(df_temp[1,"typology_varcomp"])
-      }
+      #if(is.null(df_temp$typology_varcomp)){
+      #  typology_varcomp<-typology
+     # }else{
+      #  typology_varcomp<-as.character(df_temp[1,"typology_varcomp"])
+      #}
       # coast, lake or river
       #CLR<-as.character(df_temp[1,"CLR"])
       
       for(iPeriod in 1:pcount){
         #browser()
-        dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
+        #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
+        dfp <- df_all %>% filter(Period == plist$Period[iPeriod])
         #cat(paste0("WB: ",wblist$WB[iWB]," (",iWB," of ",wbcount ,")  Period: ",plist$Period[iPeriod],"\n"))
         cat(paste0("  Period: ",plist$Period[iPeriod]," \n"))
         
@@ -110,7 +117,12 @@ Assessment <-
         
         # Loop through selected indicators
         for(iInd in IndicatorListSubset){
-          BoundsList<-df_bounds %>% filter(Type==typology,Indicator==iInd)
+          if(iInd=="CoastHypoxicArea"){
+            BoundsList<-df_bounds_WB %>% filter(MS_CD==WB,Indicator==iInd)
+          }else{
+            BoundsList<-df_bounds %>% filter(Type==typology,Indicator==iInd)
+          }
+          
           
           if(nrow(BoundsList)>0){ 
           IndSubtypes<-distinct(BoundsList,Depth_stratum)
@@ -127,31 +139,9 @@ Assessment <-
               }
             }
             
-            # The oxygen indicator refers to two global dataframes: WB_bathymetry and BoundariesHypoxicArea
-            # We need to set these before calling the O2 indicator
-            # Indicator functions need to be modified so that thus information is sent as parameters in the function call!
-            bHypoxicBoundsErr<-FALSE
-            if (iInd %in% c("CoastHypoxicArea")) {
-              
-              WB_bathymetry <<- df_bathy %>% filter(WB_ID==wblist$WB_ID[iWB]) %>% select(area_pct,depth)
-              if(!nrow(WB_bathymetry)>0){
-                # CoastHypoxicArea - No bathy inf
-                bHypoxicBoundsErr<-TRUE
-              }
-              
-              BoundariesHypoxicArea <<- df_bounds_WB %>% filter(MS_CD==wblist$WB_ID[iWB]) %>% select(Worst,P.B,M.P,G.M,H.G,RefCond) %>% as.list()
-              if(!nrow(df_bounds_WB %>% filter(MS_CD==wblist$WB_ID[iWB]))>0){
-                # CoastHypoxicArea - No WB-specific bounds
-                bHypoxicBoundsErr<-TRUE
-              }
-            }
-            
             res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,nsim)
             #cat(paste0("Indicator: ",iInd,"  res=",res$result_code,"\n"))
-            if(bHypoxicBoundsErr){
-              res$result_code<- -95 # no hypoxic boundaries
-            }
-            
+           
             if(res$result_code %in% c(0,-1)){
               
               #Period average results
@@ -159,8 +149,8 @@ Assessment <-
               df_temp<-data.frame(Mean=res$period$mean,StdErr=res$period$stderr,Code=res$result_code)
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$WB_ID<-wblist$WB_ID[iWB]
-              df_temp$Type<-wblist$typology[iWB]
+              df_temp$WB_ID<-WB
+              df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
               #cat(paste0("Indicator: ",iInd,"  Result: ",res$result_code,"\n"))
@@ -177,8 +167,8 @@ Assessment <-
               df_temp<-data.frame(Year=res$annual$year,Mean=res$annual$mean,StdErr=res$annual$stderr)
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$WB_ID<-wblist$WB_ID[iWB]
-              df_temp$Type<-wblist$typology[iWB]
+              df_temp$WB_ID<-WB
+              df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
 
@@ -193,8 +183,8 @@ Assessment <-
               df_temp<-data.frame(Estimate=res$indicator_sim,Code=res$result_code)
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$WB_ID<-wblist$WB_ID[iWB]
-              df_temp$Type<-wblist$typology[iWB]
+              df_temp$WB_ID<-WB
+              df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$sim<-1:nsim
               df_temp$Code<-res$result_code
@@ -207,8 +197,8 @@ Assessment <-
               
               if(res$result_code==-1){
                 ErrDesc<-"data <3years"
-                df_temp<-data.frame(WB_ID=wblist$WB_ID[iWB],
-                                    Type=wblist$typology[iWB],
+                df_temp<-data.frame(WB_ID=WB,
+                                    Type=typology,
                                     Period=plist$Period[iPeriod],
                                     Indicator=iInd,
                                     IndSubtype=subtype,
@@ -232,8 +222,8 @@ Assessment <-
               df_temp<-data.frame(Mean=NA,StdErr=NA,Code=res$result_code)
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$WB_ID<-wblist$WB_ID[iWB]
-              df_temp$Type<-wblist$typology[iWB]
+              df_temp$WB_ID<-WB
+              df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
               
@@ -255,8 +245,8 @@ Assessment <-
               df_temp$StdErr<-NA
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$WB_ID<-wblist$WB_ID[iWB]
-              df_temp$Type<-wblist$typology[iWB]
+              df_temp$WB_ID<-WB
+              df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
               
@@ -266,9 +256,9 @@ Assessment <-
                 res_year<-df_temp
               }
               
-              
-              df_temp<-data.frame(WB_ID=wblist$WB_ID[iWB],
-                                  Type=wblist$typology[iWB],
+              #browser()
+              df_temp<-data.frame(WB_ID=WB,
+                                  Type=typology,
                                   Period=plist$Period[iPeriod],
                                   Indicator=iInd,
                                   IndSubtype=subtype,
@@ -287,8 +277,8 @@ Assessment <-
               df_temp$Code=res$result_code
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$WB_ID<-wblist$WB_ID[iWB]
-              df_temp$Type<-wblist$typology[iWB]
+              df_temp$WB_ID<-WB
+              df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$sim<-1:nsim
               df_temp$Code<-res$result_code
@@ -304,10 +294,10 @@ Assessment <-
           
         }else{
           # no matching indicator boundaries - nrow(BoundsList)>0
-          cat(paste0(" -> no boundary values (Indicator: ",iInd,", type:",wblist$typology[iWB],")\n"))
+          cat(paste0(" -> no boundary values (Indicator: ",iInd,", type:",typology,")\n"))
           ErrDesc<-"missing boundary values"
-          df_temp<-data.frame(WB_ID=wblist$WB_ID[iWB],
-                              Type=wblist$typology[iWB],
+          df_temp<-data.frame(WB_ID=WB,
+                              Type=typology,
                               Period=plist$Period[iPeriod],
                               Indicator=iInd,
                               IndSubtype="",
@@ -322,7 +312,7 @@ Assessment <-
         }
         } #for(iInd in IndicatorList)
       }  #for(iPeriod in 1:pcount) 
-      }    #for(iWB in 1:wbcount)
+    ##  }    #for(iWB in 1:wbcount)
     #---------------------- Summarise results --------------------------
     # Get indicator categories based on mean values
     
@@ -577,8 +567,8 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   
   variance_list<- VarianceComponents(df_indicators,df_variances,typology_varcomp,indicator)
   #cat(paste0(indicator,"\n"))
-  browser()
-
+  #browser()
+ 
   res<-CalculateIndicator(indicator,df,ParameterVector,MinObsList,variance_list,MonthInclude,startyear,endyear,n_iter=nsim)
   #                                    RefCondSali
 }
