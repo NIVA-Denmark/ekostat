@@ -11,8 +11,8 @@ dfcwater<- read_sas("data/coast_watersamples.sas7bdat") # Coast water samples
 
 dfc<-bind_rows(dfcbio,dfcbqi,dfcmsmdi,dfcwater) %>%
   mutate(Year=year(date),Month=month(date)) %>%
-  select(WB_ID=MS_CD,station,date,Year,Month,
-         Period,time,station_depth,sali,biovol,
+  select(WB_ID=MS_CD,station,date,year=Year,month=Month,
+         time,station_depth,sali,biovol,
          obspoint,institution,BQI,depth,MSMDI,
          DIN,DIP,TN,TP,chla,secchi,HypoxicAreaPct,O2_bot) %>%
   filter(WB_ID!="")
@@ -37,7 +37,34 @@ dfr<-bind_rows(dfrbio,dfrwq) %>%
          O2_surf,O2_bot,SecchiDepth) %>%
   filter(WB_ID!="")
 
-rm(list=c("dflbio","dflwq","dfrbio","dfrwq","dfcbio","dfcbqi","dfcmsmdi","dfcwater"))
+# ----- Add period information --------------------------
+
+Period<-c("2007-2012","2013-2018")
+df_periods<-data.frame(Period,stringsAsFactors=F) %>%
+  mutate(yearFrom=as.numeric(substr(Period,1,4)),yearTo=as.numeric(substr(Period,6,9)))
+
+yrmin<-min(df_periods$yearFrom)
+yrmax<-max(df_periods$yearTo)
+
+year<-yrmin:yrmax
+dfYearPeriod<-expand.grid(year=year,Period=Period) %>%
+  mutate(yearFrom=as.numeric(substr(Period,1,4)),yearTo=as.numeric(substr(Period,6,9))) %>%
+  mutate(OK=(year>=yearFrom&year<=yearTo))
+
+dfYearPeriod<-dfYearPeriod %>%
+  filter(OK==T) %>%
+  select(year,Period)
+
+df_periods <- df_periods %>%
+  select(Period)
+
+# Add period information to the data files:
+
+dfc <- dfc %>% left_join(dfYearPeriod,by="year")
+dfl <- dfl %>% left_join(dfYearPeriod,by="year")
+dfr <- dfr %>% left_join(dfYearPeriod,by="year")
 
 
+rm(list=c("dflbio","dflwq","dfrbio","dfrwq","dfcbio","dfcbqi","dfcmsmdi","dfcwater",
+          "dfYearPeriod","Period","year","yrmin","yrmax"))
 
