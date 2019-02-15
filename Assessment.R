@@ -75,36 +75,14 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
 #'             
 Assessment <-
   function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp) {
-    #df_all$Type<-gsub("SE_", "", df_all$Type)
+    
     pcount<-nrow(plist)
     df_months<- df_bounds %>% distinct(Indicator,Type,Months)
-    cat(paste0(names(df_all),"\n"))
-    #wblist<-distinct(df_all,WB_ID,Type)
-    #wbcount<-nrow(wblist)
-    #progfrac= 1/(wbcount*3*length(IndicatorList))
-    
-    # Loop through distinct waterbodies and periods in the data
-
-    #for(iWB in 1:wbcount){
-      #cat(paste0("WB: ",wblist$WB[iWB]," (",iWB," of ",wbcount ,")\n"))
-      #df_temp<-df_all %>% filter(WB_ID == wblist$WB_ID[iWB])
-      #plist<-distinct(df_all,period)
-      #pcount<-nrow(plist)
-      #typology<-as.character(df_temp[1,"Type"])
-
-      #if(is.null(df_temp$typology_varcomp)){
-      #  typology_varcomp<-typology
-     # }else{
-      #  typology_varcomp<-as.character(df_temp[1,"typology_varcomp"])
-      #}
-      # coast, lake or river
-      #CLR<-as.character(df_temp[1,"CLR"])
       
       for(iPeriod in 1:pcount){
         #browser()
         #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
         dfp <- df_all %>% filter(Period == plist$Period[iPeriod])
-        #cat(paste0("WB: ",wblist$WB[iWB]," (",iWB," of ",wbcount ,")  Period: ",plist$Period[iPeriod],"\n"))
         cat(paste0("  Period: ",plist$Period[iPeriod]," \n"))
         
         # Get start and end years from the period text (e.g. "2001-2006")
@@ -128,7 +106,6 @@ Assessment <-
           IndSubtypes<-distinct(BoundsList,Depth_stratum)
           subcount<-nrow(IndSubtypes)
           dfsubs<-dfp
-          #cat(paste0("Indicator: ",iInd,"\n"))
 
           for(iSub in 1:subcount){
             df<-dfsubs
@@ -140,7 +117,7 @@ Assessment <-
             }
             
             res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,nsim)
-            #cat(paste0("Indicator: ",iInd,"  res=",res$result_code,"\n"))
+            #cat(paste0("    Indicator: ",iInd,"  res=",res$result_code,"\n"))
            
             if(res$result_code %in% c(0,-1)){
               
@@ -153,7 +130,6 @@ Assessment <-
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
-              #cat(paste0("Indicator: ",iInd,"  Result: ",res$result_code,"\n"))
               
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -294,7 +270,7 @@ Assessment <-
           
         }else{
           # no matching indicator boundaries - nrow(BoundsList)>0
-          cat(paste0(" -> no boundary values (Indicator: ",iInd,", type:",typology,")\n"))
+          #cat(paste0(" -> no boundary values (Indicator: ",iInd,", type:",typology,")\n"))
           ErrDesc<-"missing boundary values"
           df_temp<-data.frame(WB_ID=WB,
                               Type=typology,
@@ -312,10 +288,10 @@ Assessment <-
         }
         } #for(iInd in IndicatorList)
       }  #for(iPeriod in 1:pcount) 
-    ##  }    #for(iWB in 1:wbcount)
+
     #---------------------- Summarise results --------------------------
     # Get indicator categories based on mean values
-    
+
     if(exists("res_ind")){
     res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code)
     res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
@@ -371,12 +347,10 @@ Assessment <-
 
     res_rnd_count<-spread(res_rnd_count, ClassID, n, fill = NA)
   
-    #res_rnd<-res_rnd %>% left_join(res_ind, by=c("Indicator","QualityElement","QualitySubelement","QEtype")) %>% select(-c(Sali_0:Sali_36))
-    
     res_rnd<-res_rnd %>% left_join(select(res_ind,WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,EQRavg=EQR,ClassAvg=Class), 
                                    by=c("WB_ID"="WB_ID","Type"="Type","Period"="Period",
                                      "Indicator"="Indicator","IndSubtype"="IndSubtype")) %>% 
-      select(-c(Sali_0:Sali_36))
+      select(-c(ParameterVector_1:ParameterVector_10))
     Categories<-c("Bad","Poor","Mod","Good","High","Ref")
     res_rnd$Class<-Categories[res_rnd$ClassID]
     
@@ -444,6 +418,12 @@ GetClass<-function(df){
   names(df)[names(df)=="M.P"]<-"MP"
   names(df)[names(df)=="P.B"]<-"PB"
   #names(df)[names(df)==""]<-""
+  df$Ref<-as.numeric(df$Ref)
+  df$HG<-as.numeric(df$HG)
+  df$GM<-as.numeric(df$GM)
+  df$MP<-as.numeric(df$MP)
+  df$PB<-as.numeric(df$PB)
+  df$Worst<-as.numeric(df$Worst)
   
   df$Resp<-ifelse(df$HG > df$GM,-1,1)
   df$class1<-ifelse(df$Resp==1,df$Value<df$Ref,df$Value>df$Ref)
@@ -566,7 +546,6 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   MonthInclude <- IndicatorMonths(df_months,typology,indicator)
   
   variance_list<- VarianceComponents(df_indicators,df_variances,typology_varcomp,indicator)
-  #cat(paste0(indicator,"\n"))
   #browser()
  
   res<-CalculateIndicator(indicator,df,ParameterVector,MinObsList,variance_list,MonthInclude,startyear,endyear,n_iter=nsim)

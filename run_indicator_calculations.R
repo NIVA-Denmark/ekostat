@@ -3,6 +3,7 @@ library(RSQLite)
 library(tidyverse)
 library(haven)
 library(lubridate)
+library(prodlim)
 
 source("prepare_input_data.R")
 source("read_parameter_files.R")
@@ -13,7 +14,7 @@ source("IndicatorSelectionSweden.R")
 #dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
 
 # Options for indicator calculations
-nSimMC <- 3  #1000 #number of Monte Carlo simulations
+nSimMC <- 10  #1000 #number of Monte Carlo simulations
 
 # 
 start_time <- Sys.time()
@@ -46,8 +47,8 @@ ind<-paste0(ind$Indicator)
 
 #AssessmentMultiple(dfc,outputdb,IndList=ind,df_bounds,df_bounds_hypox,df_bathy,df_indicators,df_variances,bReplaceResults=T)
 AssessmentMultiple(wblistC,df_periods,dfc,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=T)
-#AssessmentMultiple(wblistL,dfl,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
-#AssessmentMultiple(wblistR,dfr,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
+AssessmentMultiple(wblistL,df_periods,dfl,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
+AssessmentMultiple(wblistR,df_periods,dfr,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
 
   
 
