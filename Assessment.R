@@ -507,12 +507,16 @@ VarianceComponents<-function(df_indicators,df_variances,typology,indicator){
   
   wtype<-substr(indicator,1,5)
   if(substr(indicator,1,4)=="Lake"){
-    wtype<-"Lake"
+    wtype<-"Lakes"
   }
   if(substr(indicator,1,5)=="Coast"){
     wtype<-"Coastal"
   }
-  
+  if(substr(indicator,1,5)=="River"){
+    wtype<-"Rivers"
+  }
+  browser()
+  # typology is NULL at this point - need to find out why it hasn't been set!
   df_variances<-df_variances %>% filter(Water_type==wtype,Type==typology, Measurement==measurement)
   variance_list <- list(V_station=df_variances$V_station[1],
                         V_obspoint=df_variances$V_station[1],

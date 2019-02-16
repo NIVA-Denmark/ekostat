@@ -8,6 +8,21 @@ df_indicators<-read.table("parameters/indicators.txt", sep="\t", stringsAsFactor
 df_varcomp<-read.table("parameters/varcomp.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") 
 df_var<-read.table("parameters/variables.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") 
 
+# df_bound <- df_bound %>%
+#   mutate(Water_type=ifelse(Water_type=="Coastal","Coast",
+#                            ifelse(Water_type=="Lakes","Lake",
+#                                   ifelse(Water_type=="Rivers","River",Water_type))))
+# 
+# df_bound_WB <- df_bound_WB %>%
+#   mutate(Water_type=ifelse(Water_type=="Coastal","Coast",
+#                            ifelse(Water_type=="Lakes","Lake",
+#                                   ifelse(Water_type=="Rivers","River",Water_type))))
+# df_varcomp <- df_varcomp %>%
+#   mutate(Water_type=ifelse(Water_type=="Coastal","Coast",
+#                            ifelse(Water_type=="Lakes","Lake",
+#                                   ifelse(Water_type=="Rivers","River",Water_type))))
+
+
 names(df_indicators)[names(df_indicators)=="Qetype"]<-"QEtype"
 names(df_indicators)[names(df_indicators)=="Quality.subelement"]<-"QualitySubelement"
 names(df_indicators)[names(df_indicators)=="Quality.element"]<-"QualityElement"

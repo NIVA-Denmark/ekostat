@@ -46,9 +46,9 @@ ind<-df_indicators %>% select(Indicator)
 ind<-paste0(ind$Indicator)
 
 #AssessmentMultiple(dfc,outputdb,IndList=ind,df_bounds,df_bounds_hypox,df_bathy,df_indicators,df_variances,bReplaceResults=T)
-AssessmentMultiple(wblistC,df_periods,dfc,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=T)
+#AssessmentMultiple(wblistC,df_periods,dfc,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=T)
 AssessmentMultiple(wblistL,df_periods,dfl,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
-AssessmentMultiple(wblistR,df_periods,dfr,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
+#AssessmentMultiple(wblistR,df_periods,dfr,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
 
   
 
