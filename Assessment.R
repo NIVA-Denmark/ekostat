@@ -29,9 +29,9 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     if(CLR=="Coast"){
       typology_varcomp<-typology
     }else{
-      typology_varcomp<-wblist$Type_region[iWB]
+      typology_varcomp<-substr(typology,1,1)
     }
-    
+
         AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp)
     
     ETA <- Sys.time() + (Sys.time() - start_time)*wbcount/(wbcount-iWB)
@@ -515,7 +515,7 @@ VarianceComponents<-function(df_indicators,df_variances,typology,indicator){
   if(substr(indicator,1,5)=="River"){
     wtype<-"Rivers"
   }
-  browser()
+
   # typology is NULL at this point - need to find out why it hasn't been set!
   df_variances<-df_variances %>% filter(Water_type==wtype,Type==typology, Measurement==measurement)
   variance_list <- list(V_station=df_variances$V_station[1],
