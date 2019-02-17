@@ -36,7 +36,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
 
         AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp)
     
-    ETA <- Sys.time() + (Sys.time() - start_time)*wbcount/(wbcount-iWB)
+    ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /iWB
     cat(paste0("Time: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
     
     resAvg <- AssessmentResults[[1]]
@@ -104,10 +104,11 @@ Assessment <-
             # For LakeBiovol, LakeBiovolEQR, LakeChla, LakeChlaEQR use Gony boundaries, if biovol Gony >5% of biovol total
             if(iInd %in% c("LakeBiovol", "LakeBiovolEQR", "LakeChla", "LakeChlaEQR")){
               biovolmean<-mean(dfp$biovol,na.rm=TRUE)
-              if(biovolmean!=0){
-                Gonytest <- mean(dfp$biovolGony,na.rm=TRUE)/biovolmean
-              }else{
-                Gonytest<-0
+              Gonytest<-0
+              if(!is.nan(biovolmean)){
+                if(biovolmean>0){
+                  Gonytest <- mean(dfp$biovolGony,na.rm=TRUE)/biovolmean
+                }
               }
               if(Gonytest>0.05){
                 BoundsList<-df_bounds %>% filter(Type==paste0(typology,"Gony"),Indicator==iInd)
