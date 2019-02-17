@@ -27,6 +27,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     CLR<-wblist$CLR[iWB]
     typology<-wblist$Type[iWB]
     if(CLR=="Coast"){
+      typology<-TypologyFixCoastal(typology) # Add leading zero to typology
       typology_varcomp<-typology
     }else{
       typology_varcomp<-substr(typology,1,1)
@@ -80,7 +81,7 @@ Assessment <-
     df_months<- df_bounds %>% distinct(Indicator,Type,Months)
       
       for(iPeriod in 1:pcount){
-        #browser()
+        
         #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
         dfp <- df_all %>% filter(Period == plist$Period[iPeriod])
         cat(paste0("  Period: ",plist$Period[iPeriod]," \n"))
@@ -232,7 +233,6 @@ Assessment <-
                 res_year<-df_temp
               }
               
-              #browser()
               df_temp<-data.frame(WB_ID=WB,
                                   Type=typology,
                                   Period=plist$Period[iPeriod],
@@ -550,7 +550,6 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   MonthInclude <- IndicatorMonths(df_months,typology,indicator)
   
   variance_list<- VarianceComponents(df_indicators,df_variances,typology_varcomp,indicator)
-  #browser()
  
   res<-CalculateIndicator(indicator,df,ParameterVector,MinObsList,variance_list,MonthInclude,startyear,endyear,n_iter=nsim)
   #                                    RefCondSali
@@ -589,5 +588,22 @@ hms_span <- function(start, end) {
     sapply(c(hours, minutes, seconds), function(x) {
       formatC(x, width = 2, format = "d", flag = "0")
     }), collapse = ":")
+}
+
+TypologyFixCoastal<-function(typology){
+  n<-nchar(typology)
+  if(substr(typology,n,n) %in% c("n","s")){
+    ns<-substr(typology,n,n)
+    typology<-substr(typology,1,n-1)
+  }else{
+    ns<-""
+  }
+  typology<-as.character(as.numeric(typology))
+  n<-nchar(typology)
+  if(n<2){
+    typology<-paste0("0",typology)
+  }
+  typology<-paste0(typology,ns)
+  return(typology)
 }
 
