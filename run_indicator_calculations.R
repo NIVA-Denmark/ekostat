@@ -14,13 +14,15 @@ source("IndicatorSelectionSweden.R")
 #dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
 
 # Options for indicator calculations
-nSimMC <- 10  #1000 #number of Monte Carlo simulations
+nSimMC <- 1000  #1000 #number of Monte Carlo simulations
 
 # 
 start_time <- Sys.time()
 
 
-outputdb<-"output/test.db"
+outputdbC<-"output/ekostat_C.db"
+outputdbL<-"output/ekostat_L.db"
+outputdbR<-"output/ekostat_R.db"
 
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
@@ -45,24 +47,22 @@ wblistR<-df_WB %>%
 ind<-df_indicators %>% select(Indicator)
 ind<-paste0(ind$Indicator)
 
-wbselect<-c("SE652920-222650",
-            "SE622011-146303",
-            "SE552170-130626",
-            "SE560900-145280")
+#Testing
 
-wbselect<-c("SE622011-146303")
+#wbselect<-c("SE652920-222650","SE622011-146303","SE552170-130626","SE560900-145280","SE562000-123800") 
+#wblistC <- wblistC %>% left_join(df_WB_EU,by="WB_ID") %>% filter(EU_CD %in% wbselect)
 
-wblistC <- wblistC %>% 
-  left_join(df_WB_EU,by="WB_ID") %>%
-  filter(EU_CD %in% wbselect)
+#wbselect<-c("SE615375-137087","SE652852-155412","SE652177-159038","SE664197-149337","SE670275-146052","SE652364-156455") 
+#wbselect<-c("SE653974-137560") 
+#wblistL <- wblistL %>% left_join(df_WB_EU,by="WB_ID") %>% filter(EU_CD %in% wbselect)
 
-           
-# SE622011-146303
-# MSMDI 2007-2012 mean=0.898849
+#wbselect<-c("SE654141-124734","SE638475-137575","SE694939-144561","SE632601-145366")
+#wblistR <- wblistR %>% left_join(df_WB_EU,by="WB_ID") %>% filter(EU_CD %in% wbselect)
 
-AssessmentMultiple(wblistC,df_periods,dfc,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=T)
-#AssessmentMultiple(wblistL,df_periods,dfl,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
-#AssessmentMultiple(wblistR,df_periods,dfr,outputdb,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=F)
+AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=T)
+AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=T)
+AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,bReplaceResults=T)
 
-  
+
+
 

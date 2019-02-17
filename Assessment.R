@@ -81,7 +81,6 @@ Assessment <-
     df_months<- df_bounds %>% distinct(Indicator,Type,Months)
       
       for(iPeriod in 1:pcount){
-        
         #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
         dfp <- df_all %>% filter(Period == plist$Period[iPeriod])
         cat(paste0("  Period: ",plist$Period[iPeriod]," \n"))
@@ -93,15 +92,31 @@ Assessment <-
         #Get the relevant subset of indicators (Coast/Lake/River)
         IndicatorListSubset <- IndicatorList[grep(CLR,IndicatorList)]
 
+        # Global variable used to pass Lake Chl to Lake Secchi calculation
+        LakeChlaGlobal<<-NA
         
         # Loop through selected indicators
         for(iInd in IndicatorListSubset){
           if(iInd=="CoastHypoxicArea"){
             BoundsList<-df_bounds_WB %>% filter(MS_CD==WB,Indicator==iInd)
           }else{
-            BoundsList<-df_bounds %>% filter(Type==typology,Indicator==iInd)
+            # For LakeBiovol, LakeBiovolEQR, LakeChla, LakeChlaEQR use Gony boundaries, if biovol Gony >5% of biovol total
+            if(iInd %in% c("LakeBiovol", "LakeBiovolEQR", "LakeChla", "LakeChlaEQR")){
+              biovolmean<-mean(dfp$biovol,na.rm=TRUE)
+              if(biovolmean!=0){
+                Gonytest <- mean(dfp$biovolGony,na.rm=TRUE)/biovolmean
+              }else{
+                Gonytest<-0
+              }
+              if(Gonytest>0.05){
+                BoundsList<-df_bounds %>% filter(Type==paste0(typology,"Gony"),Indicator==iInd)
+              }else{
+                BoundsList<-df_bounds %>% filter(Type==typology,Indicator==iInd)
+              }
+            }else{
+              BoundsList<-df_bounds %>% filter(Type==typology,Indicator==iInd)
+            }
           }
-          
           
           if(nrow(BoundsList)>0){ 
           IndSubtypes<-distinct(BoundsList,Depth_stratum)
@@ -119,9 +134,12 @@ Assessment <-
             
             res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,nsim)
             #cat(paste0("    Indicator: ",iInd,"  res=",res$result_code,"\n"))
-           
+            
             if(res$result_code %in% c(0,-1)){
-              
+              if(iInd=="LakeChla"){
+                #save Chl to a global variable, used later by LakeSecchi
+                LakeChlaGlobal<<-res$period$mean
+              }
               #Period average results
               rm(df_temp)
               df_temp<-data.frame(Mean=res$period$mean,StdErr=res$period$stderr,Code=res$result_code)
@@ -546,6 +564,23 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   df_months<- df_bounds %>% distinct(Indicator,Type,Months)
   #RefCond_sali<-SalinityReferenceValues(df_bounds,typology,indicator,missing)
   ParameterVector<-GetParameterVector(df_bounds,typology,indicator,missing)
+  
+  # RefCond for TP: Function depends on availability of data (autumn circulation, annual or August)
+  if(indicator %in% c("LakeTP","LakeTPEQR")){
+    AugustOnly <- length(unique(df$month)) == 1 && unique(df$month)[1] == 8
+    ParameterVector <- c(RefCond_LakeTP(mean(df$Abs_F420,na.rm=TRUE),100,0.6,AugustOnly))
+  }
+  # RefCond for Secchi depth: LakeChla should be second parameter in ParameterVector
+  if(indicator %in% c("LakeSecchi","LakeSecchiEQR")){
+    refcond<-RefCond_LakeSecchiDepth(mean(df$Abs_F420,na.rm=TRUE),LakeChlaGlobal)
+    ParameterVector <- c(refcond,LakeChlaGlobal)
+  }
+  if(indicator %in% c("RiverTP","RiverTPEQR")){
+    ParameterVector <- c(RefCond_RiverTP(mean(df$Abs_F420,na.rm=TRUE),100,1),rep(0,35))
+  }
+  
+  
+  
   MinObsList<-GetMinObs(df_bounds,typology,indicator,missing)
   MonthInclude <- IndicatorMonths(df_months,typology,indicator)
   
