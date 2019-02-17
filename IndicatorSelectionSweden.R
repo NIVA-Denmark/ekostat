@@ -81,7 +81,7 @@ CalculateIndicator <-
                    LakeAindexW5      = df$AindexW5,
                    LakeEindexW3      = df$EindexW3,
                    LakeTPEQR         = df$TP,
-                   LakeSecchiDepthEQR= df$SecchiDepth,
+                   LakeSecchiEQR= df$SecchiDepth,
                    LakeOxygenSummer  = df$O2_bot,
                    RiverIPS          = df$BenthicDiatomsIPS,
                    RiverIPSEQR       = df$BenthicDiatomsIPS,
@@ -145,7 +145,7 @@ CalculateIndicator <-
                     LakeAindexW5      = AggregateEQRtrunc_N_period,
                     LakeEindexW3      = AggregateEQRtrunc_N_period,
                     LakeTPEQR         = Aggregate_period_P_EQR,
-                    LakeSecchiDepthEQR= Aggregate_period_N_EQR,
+                    LakeSecchiEQR= Aggregate_period_N_EQR,
                     LakeOxygenSummer  = Min_year,
                     RiverIPS          = Aggregate_period,
                     RiverIPSEQR       = Aggregate_period_N_EQR,
@@ -208,7 +208,7 @@ CalculateIndicator <-
                     LakeAindexW5      = logit_w_replace,
                     LakeEindexW3      = logit_w_replace,
                     LakeTPEQR         = log,
-                    LakeSecchiDepthEQR= identity,
+                    LakeSecchiEQR= identity,
                     LakeOxygenSummer  = identity,
                     RiverIPS          = identity,
                     RiverIPSEQR       = identity,
@@ -271,7 +271,7 @@ CalculateIndicator <-
                         LakeAindexW5      = plogis,
                         LakeEindexW3      = plogis,
                         LakeTPEQR         = exp,
-                        LakeSecchiDepthEQR= identity,
+                        LakeSecchiEQR= identity,
                         LakeOxygenSummer  = identity,
                         RiverIPS          = identity,
                         RiverIPSEQR       = identity,
@@ -308,7 +308,7 @@ CalculateIndicator <-
       df <- mutate(df,RefCond = RefCond)
     }
     # setting RefCond and MaxCond depending for lake and river indicators, i.e. RefCond in ParameterVector[1] and MaxCond in ParameterVector[2]
-    if (Indicator %in% c("LakeBiovolEQR","LakeChlaEQR","LakePTIEQR","LakeNphytspecEQR","LakeTMIEQR","LakeIPSEQR","LakeASPTEQR","LakeBQIEQR","LakeMILAEQR","LakeEQR8","LakeAindexW5","LakeEindexW3","LakeTPEQR","LakeSecchiDepthEQR",
+    if (Indicator %in% c("LakeBiovolEQR","LakeChlaEQR","LakePTIEQR","LakeNphytspecEQR","LakeTMIEQR","LakeIPSEQR","LakeASPTEQR","LakeBQIEQR","LakeMILAEQR","LakeEQR8","LakeAindexW5","LakeEindexW3","LakeTPEQR","LakeSecchiEQR",
                          "RiverIPSEQR","RiverASPTEQR","RiverDJEQR","RiverMISAEQR","RiverTPEQR")) {
       RefCond <- mat.or.vec(nrow(df), 1)
       MaxCond <- mat.or.vec(nrow(df), 1)
