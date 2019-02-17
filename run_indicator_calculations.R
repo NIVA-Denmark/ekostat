@@ -14,10 +14,10 @@ source("IndicatorSelectionSweden.R")
 #dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
 
 # Options for indicator calculations
-nSimMC <- 1000  #1000 #number of Monte Carlo simulations
+nSimMC <- 10  #1000 #number of Monte Carlo simulations
 
 # 
-start_time <- Sys.time()
+
 
 
 outputdbC<-"output/ekostat_C.db"
