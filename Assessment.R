@@ -6,7 +6,7 @@
 #'
 
                             
-AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,bReplaceResults=T){
+AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,nSimMC=1000,bReplaceResults=T){
   start_time <- Sys.time()
   
   if(bReplaceResults){
