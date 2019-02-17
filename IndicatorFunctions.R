@@ -67,7 +67,7 @@ Aggregate_period_P_EQR <- function(df) {
 # Aggregate over entire period and then calculate EQR value
 Aggregate_period_N_EQR <- function(df) {
   yearmeans <- df %>% group_by(year) %>%
-    summarise(xvar = mean(xvar,na.rm = TRUE)/mean(RefCond,na.rm = TRUE))
+    summarise(xvar = mean(xvar,na.rm = TRUE)/mean(df$RefCond,na.rm = TRUE))
   
   periodmean <- mean(df$xvar)/mean(df$RefCond)
   res <- list(periodmean=periodmean,yearmeans=yearmeans,error_code=0)
