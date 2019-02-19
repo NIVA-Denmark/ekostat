@@ -14,19 +14,29 @@ source("IndicatorSelectionSweden.R")
 #dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
 
 # Options for indicator calculations
-nSimMC <- 10  #1000 #number of Monte Carlo simulations
+nSimMC <- 1000 #number of Monte Carlo simulations
 
 # 
 
 
 
-outputdbC<-"output/ekostat_C.db"
-outputdbL<-"output/ekostat_L.db"
-outputdbR<-"output/ekostat_R.db"
+outputdbC<-"output/ekostat_Cx.db"
+outputdbL<-"output/ekostat_Lx.db"
+outputdbR<-"output/ekostat_Rx.db"
+
+exclude <- read.table("exclude.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") %>%
+  mutate(Exclude=T)
+
+df_WB <- df_WB %>%
+  left_join(exclude,by="WB_ID") %>%
+  mutate(Exclude=ifelse(is.na(Exclude),F,Exclude))
+
 
 wblistC<-df_WB %>% 
-  distinct(CLR,WB_ID,Type) %>%
-  filter(CLR=="Coast")
+  distinct(CLR,WB_ID,Type,Exclude) %>%
+  filter(CLR=="Coast") %>%
+  filter(Exclude!=T) %>%
+  select(-Exclude)
   
 
 wblistL<-df_WB %>% 
@@ -59,9 +69,10 @@ ind<-paste0(ind$Indicator)
 #wbselect<-c("SE654141-124734","SE638475-137575","SE694939-144561","SE632601-145366")
 #wblistR <- wblistR %>% left_join(df_WB_EU,by="WB_ID") %>% filter(EU_CD %in% wbselect)
 
-AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T)
-AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T)
-AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T)
+AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T,logfile="log_C.txt")
+AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T,logfile="log_L.txt")
+AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T,logfile="log_R.txt")
+
 
 
 

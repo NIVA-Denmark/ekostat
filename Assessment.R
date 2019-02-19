@@ -6,8 +6,12 @@
 #'
 
                             
-AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,nSimMC=1000,bReplaceResults=T){
+AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,nSimMC=1000,bReplaceResults=T,logfile=""){
+  
   start_time <- Sys.time()
+  if(logfile!=""){
+    cat(paste0("Time: ",Sys.time(),"  Start\n"),file=logfile,append=F)
+  }
   
   if(bReplaceResults){
     bOVR<-TRUE
@@ -24,7 +28,10 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     WB<-wblist$WB_ID[iWB]
     dfselect<-df %>% filter(WB_ID == WB)
     
-    cat(paste0(wblist$Category[iWB]," WB: ",WB," (",iWB," of ",wbcount ,")\n"))
+    if(logfile!=""){
+      cat(paste0(wblist$Category[iWB],"WB: ",WB," (",iWB," of ",wbcount ,")"),file=logfile,append=T)
+    }
+    
     CLR<-wblist$CLR[iWB]
     typology<-wblist$Type[iWB]
     if(CLR=="Coast"){
@@ -39,6 +46,10 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /iWB
     cat(paste0("Time: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
     
+    if(logfile!=""){
+      cat(paste0("   done at: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"),file=logfile,append=T)
+    }
+
     resAvg <- AssessmentResults[[1]]
     resMC <- AssessmentResults[[2]]
     resErr <- AssessmentResults[[3]]
@@ -59,7 +70,14 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     bOVR<-FALSE
     bAPP<-TRUE
     
-  }}
+  }
+  # if(logfile!=""){
+  #   writeLines(paste0("Time: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") Finished"), fileConn)
+  #   close(fileConn)
+  # }
+  
+  
+  }
 #-------------------------------------------------------------------
 #' ------ Assessment ------------------------------------------------
 #'------------------------------------------------------------------
