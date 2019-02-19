@@ -20,9 +20,9 @@ nSimMC <- 1000 #number of Monte Carlo simulations
 
 
 
-outputdbC<-"output/ekostat_Cx.db"
-outputdbL<-"output/ekostat_Lx.db"
-outputdbR<-"output/ekostat_Rx.db"
+outputdbC<-"output/ekostat_C.db"
+outputdbL<-"output/ekostat_L.db"
+outputdbR<-"output/ekostat_R.db"
 
 exclude <- read.table("exclude.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") %>%
   mutate(Exclude=T)
