@@ -20,7 +20,7 @@ names(df_bound)[names(df_bound)=="Min.per.year"]<-"MinPerYear"
 names(df_bound_WB)[names(df_bound_WB)=="Min..year"]<-"MinYear"
 names(df_bound_WB)[names(df_bound_WB)=="Min.per.year"]<-"MinPerYear"
 
-dbpath<-"../efs/ekostat/ekostat3.db"
+dbpath<-"../efs/ekostat/ekostat_info.db"
 db <- dbConnect(SQLite(), dbname=dbpath)
 df_WB<-dbGetQuery(conn=db,"Select * from WB_info")
 df_WB_mun<-dbGetQuery(conn=db,"Select * from WB_mun")

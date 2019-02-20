@@ -155,7 +155,9 @@ Assessment <-
             res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,nsim)
             #cat(paste0("    Indicator: ",iInd,"  res=",res$result_code,"\n"))
             
-            if(res$result_code %in% c(0,-1)){
+            ErrDesc<-ErrorDescription(res$result_code,BoundsList$MinYear[1],BoundsList$MinPerYear[1])
+            
+            if(res$result_code %in% c(0,-1,-2)){
               if(iInd=="LakeChla"){
                 #save Chl to a global variable, used later by LakeSecchi
                 LakeChlaGlobal<<-res$period$mean
@@ -169,6 +171,7 @@ Assessment <-
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
+              df_temp$Note<-ErrDesc
               
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -186,7 +189,8 @@ Assessment <-
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
-
+              df_temp$Note<-ErrDesc
+              
               if(exists("res_year")){
                 res_year<-bind_rows(res_year,df_temp)
               }else{
@@ -210,8 +214,9 @@ Assessment <-
                 res_rnd<-df_temp
               }
               
-              if(res$result_code==-1){
-                ErrDesc<-"data <3years"
+              if(res$result_code %in% c(-1,-2)){
+                
+                #ErrDesc<-ErrorDescription(res$result_code,res$MinYear,res$MinPerYear)
                 df_temp<-data.frame(WB_ID=WB,
                                     Type=typology,
                                     Period=plist$Period[iPeriod],
@@ -228,19 +233,23 @@ Assessment <-
               
             }else{ #res$result_code!=0
               #Add to the list of errors
-              ErrDesc <- "unspecified"
-              if(res$result_code==-1) ErrDesc<-"data <3years"
-              if(res$result_code==-90) ErrDesc<-"no data"
-              if(res$result_code==-91) ErrDesc<-"insufficient data"
-              if(res$result_code==-95) ErrDesc<-"missing boundary values" 
+              # ErrDesc <- "unspecified"
+              # if(res$result_code==-1) ErrDesc<-"data <3years"
+              # if(res$result_code==-2) ErrDesc<-""
+              # if(res$result_code==-90) ErrDesc<-"no data"
+              # if(res$result_code==-91) ErrDesc<-"insufficient data"
+              # if(res$result_code==-95) ErrDesc<-"missing boundary values" 
               rm(df_temp)
-              df_temp<-data.frame(Mean=NA,StdErr=NA,Code=res$result_code)
-              df_temp$Indicator<-iInd
-              df_temp$IndSubtype<-subtype
-              df_temp$WB_ID<-WB
-              df_temp$Type<-typology
-              df_temp$Period<-plist$Period[iPeriod]
-              df_temp$Code<-res$result_code
+              df_temp<-data.frame(Mean=NA,
+                                  StdErr=NA,
+                                  Code=res$result_code,
+                                  Indicator=iInd,
+                                  IndSubtype=subtype,
+                                  WB_ID=WB,
+                                  Type=typology,
+                                  Period=plist$Period[iPeriod],
+                                  Code=res$result_code,
+                                  Note=ErrDesc)
               
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -309,14 +318,14 @@ Assessment <-
         }else{
           # no matching indicator boundaries - nrow(BoundsList)>0
           #cat(paste0(" -> no boundary values (Indicator: ",iInd,", type:",typology,")\n"))
-          ErrDesc<-"missing boundary values"
+          #ErrDesc<-"missing boundary values"
           df_temp<-data.frame(WB_ID=WB,
                               Type=typology,
                               Period=plist$Period[iPeriod],
                               Indicator=iInd,
                               IndSubtype="",
                               Code=-96,
-                              Error=ErrDesc)
+                              Error=ErrorDescription(-96))
           if(exists("res_err")){
             res_err<-bind_rows(res_err,df_temp)
           }else{
@@ -331,8 +340,14 @@ Assessment <-
     # Get indicator categories based on mean values
 
     if(exists("res_ind")){
-    res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code)
-    res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code,Note)
+    #res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    res_ind<- res_ind %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                                    by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    #res_ind<- res_ind %>% 
+    #  select(-c(ParameterVector_1:ParameterVector_10,V_WBperiod,V_WBannual))
+                                    
+    
     res_ind$Value<-res_ind$Mean
     
     #We now have some duplicates for BQI because there are different
@@ -343,13 +358,16 @@ Assessment <-
     # Get indicator categories for MC results
     res_rnd<- res_rnd %>% select(WB_ID,Type,Period,Indicator,IndSubtype,sim,Estimate,Code)
     
-    res_rnd<- res_rnd %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    
+    res_rnd<- res_rnd %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst), 
+                                    by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    
+    #res_rnd<- res_rnd %>% left_join(df_bounds, 
+    #                                by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
     names(res_rnd)[names(res_rnd)=="Estimate"]<-"Value"
     
-    #res_rnd$Value<-ifelse(res_rnd$UseEQR==1,(res_rnd$Estimate/res_rnd$Ref),res_rnd$Estimate)
     res_rnd<-GetClass(res_rnd)
-    #cat(paste0("Sim results: ",nrow(res_rnd),"\n"))
-    
+
     res_rnd <- res_rnd %>% left_join(select(df_indicators,Indicator,QualityElement,QualitySubelement,QEtype),
                                      by=c("Indicator"))
     
@@ -387,8 +405,8 @@ Assessment <-
   
     res_rnd<-res_rnd %>% left_join(select(res_ind,WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,EQRavg=EQR,ClassAvg=Class), 
                                    by=c("WB_ID"="WB_ID","Type"="Type","Period"="Period",
-                                     "Indicator"="Indicator","IndSubtype"="IndSubtype")) %>% 
-      select(-c(ParameterVector_1:ParameterVector_10))
+                                     "Indicator"="Indicator","IndSubtype"="IndSubtype")) 
+    
     Categories<-c("Bad","Poor","Mod","Good","High","Ref")
     res_rnd$Class<-Categories[res_rnd$ClassID]
     
@@ -404,13 +422,8 @@ Assessment <-
 
     res<-list(data.frame)
     
-    Note<-c("OK","data<3yrs","missing","missing")
-    Code<-c(0,-1,-90,-91)
-    Note<-data.frame(Code,Note,stringsAsFactors=FALSE)
-  
-    #Indicators
-    res[[1]] <-res_ind %>% left_join(Note, by="Code")#%>% select(WB_ID,Type,Period,QualityElement,QualitySubelement,Indicator,Mean,StdErr,EQR,Class,fBad,fPoor,fMod,fGood,fHigh )
-    res[[2]]<-res_rnd %>% left_join(Note, by="Code")
+    res[[1]]<-res_ind 
+    res[[2]]<-res_rnd 
     if(!exists("res_err")){
       res_err<-data.frame(WB_ID=NA,Type=NA,Period=NA,Indicator=NA,
                           IndSubtype=NA,Code=NA,Error=NA)
@@ -560,6 +573,8 @@ VarianceComponents<-function(df_indicators,df_variances,typology,indicator){
                         V_obspoint=df_variances$V_station[1],
                         V_year=df_variances$V_year[1],
                         V_yearmonth=df_variances$V_yearmonth[1],
+                        V_monthhour=df_variances$V_monthhour[1],
+                        V_yearmonthhour=df_variances$V_yearmonthhour[1],
                         V_stationdate=df_variances$V_stationdate[1],
                         V_stationyear=df_variances$V_stationyear[1],
                         V_stationmonth=df_variances$V_stationmonth[1],
@@ -662,3 +677,13 @@ TypologyFixCoastal<-function(typology){
   return(typology)
 }
 
+ErrorDescription<-function(ErrCode,nyear=0,nobs=0){
+  if(ErrCode==0) return("OK")
+  else if(ErrCode==-1) return(paste0("obs <",nyear," years"))
+  else if (ErrCode==-2) return(paste0("<",nobs," obs per year"))
+  else if (ErrCode==-90) return("no data")
+  else if (ErrCode==-91) return("insufficient data")
+  else if (ErrCode==-95) return("missing boundary values")
+  else if (ErrCode==-96) return("missing boundary values")
+  else return("")
+} 

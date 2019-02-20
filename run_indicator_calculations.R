@@ -14,7 +14,7 @@ source("IndicatorSelectionSweden.R")
 #dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
 
 # Options for indicator calculations
-nSimMC <- 1000 #number of Monte Carlo simulations
+nSimMC <- 100 #number of Monte Carlo simulations
 
 # 
 
@@ -24,8 +24,8 @@ outputdbC<-"output/ekostat_C.db"
 outputdbL<-"output/ekostat_L.db"
 outputdbR<-"output/ekostat_R.db"
 
-exclude <- read.table("exclude.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") %>%
-  mutate(Exclude=T)
+#exclude <- read.table("exclude.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") %>%
+#  mutate(Exclude=T)
 
 df_WB <- df_WB %>%
   left_join(exclude,by="WB_ID") %>%
@@ -34,10 +34,7 @@ df_WB <- df_WB %>%
 
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type,Exclude) %>%
-  filter(CLR=="Coast") %>%
-  filter(Exclude!=T) %>%
-  select(-Exclude)
-  
+  filter(CLR=="Coast")
 
 wblistL<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
@@ -56,8 +53,8 @@ wblistR<-df_WB %>%
 #--------------------------------------------------------------------------------------
 ind<-df_indicators %>% select(Indicator)
 ind<-paste0(ind$Indicator)
-
 #Testing
+#ind<-c("CoastSecchiEQR")
 
 #wbselect<-c("SE652920-222650","SE622011-146303","SE552170-130626","SE560900-145280","SE562000-123800") 
 #wblistC <- wblistC %>% left_join(df_WB_EU,by="WB_ID") %>% filter(EU_CD %in% wbselect)
