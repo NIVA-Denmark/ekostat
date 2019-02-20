@@ -12,6 +12,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
   if(logfile!=""){
     cat(paste0("Time: ",Sys.time(),"  Start\n"),file=logfile,append=F)
   }
+  cat(paste0("Time: ",Sys.time(),"  Start\n"))
   
   if(bReplaceResults){
     bOVR<-TRUE
@@ -31,6 +32,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     if(logfile!=""){
       cat(paste0(wblist$Category[iWB],"WB: ",WB," (",iWB," of ",wbcount ,")"),file=logfile,append=T)
     }
+    cat(paste0(wblist$Category[iWB],"WB: ",WB," (",iWB," of ",wbcount ,")"))
     
     CLR<-wblist$CLR[iWB]
     typology<-wblist$Type[iWB]
@@ -44,7 +46,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
         AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp)
     
     ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /iWB
-    cat(paste0("Time: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
+    cat(paste0(" done at: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
     
     if(logfile!=""){
       cat(paste0("   done at: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"),file=logfile,append=T)
@@ -102,7 +104,7 @@ Assessment <-
       for(iPeriod in 1:pcount){
         #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
         dfp <- df_all %>% filter(Period == plist$Period[iPeriod])
-        cat(paste0("  Period: ",plist$Period[iPeriod]," \n"))
+        cat(paste0(" [",plist$Period[iPeriod],"] "))
         
         # Get start and end years from the period text (e.g. "2001-2006")
         startyear<-as.numeric(substr(as.character(plist$Period[iPeriod]),1,4))

@@ -14,10 +14,7 @@ source("IndicatorSelectionSweden.R")
 #dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
 
 # Options for indicator calculations
-nSimMC <- 100 #number of Monte Carlo simulations
-
-# 
-
+nSimMC <- 200 #number of Monte Carlo simulations
 
 
 outputdbC<-"output/ekostat_C.db"
@@ -27,13 +24,13 @@ outputdbR<-"output/ekostat_R.db"
 #exclude <- read.table("exclude.txt", sep="\t", stringsAsFactors=F,header=T,comment.char="") %>%
 #  mutate(Exclude=T)
 
-df_WB <- df_WB %>%
-  left_join(exclude,by="WB_ID") %>%
-  mutate(Exclude=ifelse(is.na(Exclude),F,Exclude))
+# df_WB <- df_WB %>%
+#   left_join(exclude,by="WB_ID") %>%
+#   mutate(Exclude=ifelse(is.na(Exclude),F,Exclude))
 
 
 wblistC<-df_WB %>% 
-  distinct(CLR,WB_ID,Type,Exclude) %>%
+  distinct(CLR,WB_ID,Type) %>%
   filter(CLR=="Coast")
 
 wblistL<-df_WB %>% 
