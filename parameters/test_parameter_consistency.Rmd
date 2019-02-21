@@ -36,6 +36,18 @@ test4 <- df_varcomp %>%
   distinct(Water_type,Measurement) %>%
   left_join(mutate(distinct(df_indicators,Water_type,Measurement),OK=1),by=c("Water_type","Measurement")) %>%
   filter(is.na(OK)) %>% select(-OK)
+
+test5 <- df_indicators %>%
+  distinct(Water_type,Indicator) %>%
+  left_join(mutate(distinct(df_var,Water_type,Indicator,var),OK=1),by=c("Water_type","Indicator")) %>%
+  filter(is.na(OK)) %>% select(-OK)
+
+test6 <- df_var %>%
+  distinct(Water_type,Indicator,var) %>%
+  left_join(mutate(distinct(df_indicators,Water_type,Indicator),OK=1),by=c("Water_type","Indicator")) %>%
+  filter(is.na(OK)) %>% select(-OK)
+
+
 ```
 ## Testing consistency between indicator and measurement names in the Excel Sheets for shinyapp
 
@@ -56,6 +68,15 @@ test3
 Measurements included in "Varcomp" sheet which are not found in "Indicator data"
 ```{r test4,  echo=FALSE}
 test4
+```
+
+Indicators not found in variable list
+```{r test5,  echo=FALSE}
+test5
+```
+Variables not found in indicators list
+```{r test6,  echo=FALSE}
+test6
 ```
 
 ### Conclusions
