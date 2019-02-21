@@ -275,6 +275,7 @@ Assessment <-
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
+              df_temp$Note<-ErrDesc
               
               if(exists("res_year")){
                 res_year<-bind_rows(res_year,df_temp)
@@ -306,7 +307,7 @@ Assessment <-
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$sim<-1:nsim
-              df_temp$Code<-res$result_code
+              #df_temp$Code<-res$result_code
               
               if(exists("res_rnd")){
                 res_rnd<-bind_rows(res_rnd,df_temp)
