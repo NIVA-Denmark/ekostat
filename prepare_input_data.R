@@ -17,6 +17,13 @@ dfc<-bind_rows(dfcbio,dfcbqi,dfcmsmdi,dfcwater) %>%
          DIN,DIP,TN,TP,chla,secchi,HypoxicAreaPct,O2_bot) %>%
   filter(WB_ID!="")
 
+df_SMHI<-read.table(file="data/from_SMHI/WATERS_export.txt",header=T,stringsAsFactors=F,sep="\t")
+df_SMHI <- df_SMHI %>% 
+  select(WB_ID=MS_CD,EU_CD=WB_ID,Station,date=Date,year,month,time=Time,station_depth,sali,biovol,institution=Institution,depth=DEPH,
+         BQI,DIN,DIP,TN,TP,chla=Chla,secchi=Secchi,HypoxicAreaPct,O2_bot)
+
+dfc<-bind_rows(df_SMHI,dfcmsmdi)
+
 dfl<-bind_rows(dflwq,dflbio) %>%
   select(WB_ID=MS_CD,station,date,year,month,sali,obspoint,
          min_depth,max_depth,depth_min,depth_max,Nspecies_phytoplankton,
