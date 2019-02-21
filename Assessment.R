@@ -37,7 +37,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     CLR<-wblist$CLR[iWB]
     typology<-wblist$Type[iWB]
     if(CLR=="Coast"){
-      typology<-TypologyFixCoastal(typology) # Add leading zero to typology
+      typology<-TypeLeadingZero(typology) # Add leading zero to typology
       typology_varcomp<-typology
     }else{
       typology_varcomp<-substr(typology,1,1)
@@ -235,12 +235,6 @@ Assessment <-
               
             }else{ #res$result_code!=0
               #Add to the list of errors
-              # ErrDesc <- "unspecified"
-              # if(res$result_code==-1) ErrDesc<-"data <3years"
-              # if(res$result_code==-2) ErrDesc<-""
-              # if(res$result_code==-90) ErrDesc<-"no data"
-              # if(res$result_code==-91) ErrDesc<-"insufficient data"
-              # if(res$result_code==-95) ErrDesc<-"missing boundary values" 
               rm(df_temp)
               df_temp<-data.frame(Mean=NA,
                                   StdErr=NA,
@@ -296,7 +290,8 @@ Assessment <-
                 res_err<-df_temp
               }
               
-              #Add empty lines to the MC results for the indicators with no data
+              #Add empty lines to the MC results for the indicators with no data 
+              if(FALSE){
               rm(df_temp)
               Estimate <- rep(NA,nsim)
               df_temp<-data.frame(Estimate)
@@ -314,6 +309,7 @@ Assessment <-
               }else{
                 res_rnd<-df_temp
               }
+              }#FALSE
               
             }
           } #for(iSub in 1:subcount)
@@ -406,12 +402,14 @@ Assessment <-
 
     res_rnd_count<-spread(res_rnd_count, ClassID, n, fill = NA)
   
-    res_rnd<-res_rnd %>% left_join(select(res_ind,WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,EQRavg=EQR,ClassAvg=Class), 
-                                   by=c("WB_ID"="WB_ID","Type"="Type","Period"="Period",
-                                     "Indicator"="Indicator","IndSubtype"="IndSubtype")) 
+    #res_rnd<-res_rnd %>% left_join(select(res_ind,WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,EQRavg=EQR,ClassAvg=Class), 
+    #                               by=c("WB_ID"="WB_ID","Type"="Type","Period"="Period",
+    #                                 "Indicator"="Indicator","IndSubtype"="IndSubtype")) 
     
     Categories<-c("Bad","Poor","Mod","Good","High","Ref")
     res_rnd$Class<-Categories[res_rnd$ClassID]
+    
+    res_rnd<-res_rnd %>% select(WB_ID,Period,Indicator,IndSubtype,sim,Value,ClassID,Class,EQR)
     
     res_ind<-left_join(res_ind,res_rnd_count,by = c("WB_ID", "Type", "Period", "Indicator", "IndSubtype"))
     
@@ -565,6 +563,7 @@ VarianceComponents<-function(df_indicators,df_variances,typology,indicator){
   }
   if(substr(indicator,1,5)=="Coast"){
     wtype<-"Coastal"
+    df_variances$Type<-lapply(df_variances$Type,function(x) TypeLeadingZero(x))  
   }
   if(substr(indicator,1,5)=="River"){
     wtype<-"Rivers"
@@ -663,21 +662,42 @@ hms_span <- function(start, end) {
     }), collapse = ":")
 }
 
-TypologyFixCoastal<-function(typology){
-  n<-nchar(typology)
-  if(substr(typology,n,n) %in% c("n","s")){
-    ns<-substr(typology,n,n)
-    typology<-substr(typology,1,n-1)
-  }else{
-    ns<-""
+# TypologyFixCoastal<-function(typology){
+#   n<-nchar(typology)
+#   if(substr(typology,n,n) %in% c("n","s")){
+#     ns<-substr(typology,n,n)
+#     typology<-substr(typology,1,n-1)
+#   }else{
+#     ns<-""
+#   }
+#   typology<-as.character(typology)
+#   n<-nchar(typology)
+#   if(n<2){
+#     typology<-paste0("0",typology)
+#   }
+#   typology<-paste0(typology,ns)
+#   return(typology)
+# }
+
+# function to add leading zero to coastal types 
+TypeLeadingZero<-function(type){
+  if(is.numeric(type)){
+    type<-as.character(type)
   }
-  typology<-as.character(as.numeric(typology))
-  n<-nchar(typology)
-  if(n<2){
-    typology<-paste0("0",typology)
+  if(typeof(type)=="character"){
+    n = nchar(type)
+    ns = substr(type,n,n)
+    if(ns %in% c("s","n")){
+      value=as.numeric(substr(type,1,n-1))
+    }else{
+      value=as.numeric(type)
+      ns=""
+    }
+    if(value<10){
+      type=paste0("0",as.character(value),ns)
+    }
   }
-  typology<-paste0(typology,ns)
-  return(typology)
+  return(type)
 }
 
 ErrorDescription<-function(ErrCode,nyear=0,nobs=0){
