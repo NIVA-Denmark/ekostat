@@ -291,9 +291,9 @@ Assessment <-
               }
               
               #Add empty lines to the MC results for the indicators with no data 
-              if(FALSE){
+              
               rm(df_temp)
-              Estimate <- rep(NA,nsim)
+              Estimate <- rep(NA,1)
               df_temp<-data.frame(Estimate)
               df_temp$Code=res$result_code
               df_temp$Indicator<-iInd
@@ -301,7 +301,7 @@ Assessment <-
               df_temp$WB_ID<-WB
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
-              df_temp$sim<-1:nsim
+              df_temp$sim<-NA #1:nsim
               #df_temp$Code<-res$result_code
               
               if(exists("res_rnd")){
@@ -309,7 +309,7 @@ Assessment <-
               }else{
                 res_rnd<-df_temp
               }
-              }#FALSE
+              #FALSE
               
             }
           } #for(iSub in 1:subcount)
