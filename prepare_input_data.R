@@ -16,13 +16,21 @@ dfc<-bind_rows(dfcbio,dfcbqi,dfcmsmdi,dfcwater) %>%
          obspoint,institution,BQI,depth,MSMDI,
          DIN,DIP,TN,TP,chla,secchi,HypoxicAreaPct,O2_bot) %>%
   filter(WB_ID!="")
-
-df_SMHI<-read.table(file="data/from_SMHI/WATERS_export.txt",header=T,stringsAsFactors=F,sep="\t")
-df_SMHI <- df_SMHI %>% 
-  select(WB_ID=MS_CD,EU_CD=WB_ID,Station,date=Date,year,month,time=Time,station_depth,sali,biovol,institution=Institution,depth=DEPH,
-         BQI,DIN,DIP,TN,TP,chla=Chla,secchi=Secchi,HypoxicAreaPct,O2_bot)
-
-dfc<-bind_rows(df_SMHI,dfcmsmdi)
+# 
+# dfcmsmdi<-dfcmsmdi %>%
+#   mutate(Year=year(date),Month=month(date)) %>%
+#   select(WB_ID=MS_CD,station,date,year=Year,month=Month,
+#          obspoint,institution,MSMDI) %>%
+#   filter(WB_ID!="")
+# 
+# df_SMHI<-read.table(file="data/from_SMHI/WATERS_export.txt",header=T,stringsAsFactors=F,sep="\t")
+# 
+# df_SMHI <- df_SMHI %>% 
+#   select(WB_ID=MS_CD,EU_CD=WB_ID,station=Station,date=Date,year,month,time=Time,station_depth,sali,biovol,institution=Institution,depth=DEPH,
+#          BQI,DIN,DIP,TN,TP,chla=Chla,secchi=Secchi,HypoxicAreaPct,O2_bot) %>%
+#   mutate(date=as.Date(date)) 
+# 
+# dfc<-bind_rows(df_SMHI,dfcmsmdi)
 
 dfl<-bind_rows(dflwq,dflbio) %>%
   select(WB_ID=MS_CD,station,date,year,month,sali,obspoint,
