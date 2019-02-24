@@ -28,3 +28,5 @@ df_WB_lan<-dbGetQuery(conn=db,"Select * from WB_lan")
 df_WB_EU<-dbGetQuery(conn=db,"Select * from WB_EU")
 dbDisconnect(db)
 
+#Add boundaries for missing river types
+source("read_parameter_files_fix_river_types.R")

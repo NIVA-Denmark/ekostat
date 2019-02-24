@@ -97,7 +97,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
 #'             
 Assessment <-
   function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp) {
-    
+    #browser()
     pcount<-nrow(plist)
     df_months<- df_bounds %>% distinct(Indicator,Type,Months)
       
@@ -620,9 +620,9 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   
   MinObsList<-GetMinObs(df_bounds,typology,indicator,missing)
   MonthInclude <- IndicatorMonths(df_months,typology,indicator)
-  
+  #browser()
   variance_list<- VarianceComponents(df_indicators,df_variances,typology_varcomp,indicator)
- 
+  cat(paste0(indicator,"\n"))
   res<-CalculateIndicator(indicator,df,ParameterVector,MinObsList,variance_list,MonthInclude,startyear,endyear,n_iter=nsim)
   #                                    RefCondSali
 }
