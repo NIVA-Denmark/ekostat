@@ -622,7 +622,7 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   MonthInclude <- IndicatorMonths(df_months,typology,indicator)
   #browser()
   variance_list<- VarianceComponents(df_indicators,df_variances,typology_varcomp,indicator)
-  cat(paste0(indicator,"\n"))
+
   res<-CalculateIndicator(indicator,df,ParameterVector,MinObsList,variance_list,MonthInclude,startyear,endyear,n_iter=nsim)
   #                                    RefCondSali
 }
