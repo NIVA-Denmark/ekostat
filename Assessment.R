@@ -6,7 +6,7 @@
 #'
 
                             
-AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,nSimMC=1000,bReplaceResults=T,logfile=""){
+AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,nSimMC=1000,bReplaceResults=T,logfile="",iStart=1){
   
   start_time <- Sys.time()
   if(logfile!=""){
@@ -24,7 +24,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
   
   wbcount<-nrow(wblist)
   
-  for(iWB in 1:wbcount){
+  for(iWB in iStart:wbcount){
     #for(iWB in 1:1){
     WB<-wblist$WB_ID[iWB]
     dfselect<-df %>% filter(WB_ID == WB)
@@ -45,7 +45,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
 
         AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp)
     
-    ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /iWB
+    ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /(1+iWB-iStart)
     cat(paste0(" done at: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
     
     if(logfile!=""){
