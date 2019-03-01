@@ -350,7 +350,6 @@ Assessment <-
     res_ind$Value<-res_ind$Mean
     
     #We now have some duplicates for BQI because there are different
-    
     # Do we show mean concentrations where the indicator is EQR value?
     res_ind<-GetClass(res_ind)
     
@@ -496,7 +495,9 @@ GetClass<-function(df){
   df$Bnd2<-ifelse(df$ClassID==5,df$Ref,df$Bnd2)
 
   df$EQR<-0.2*((df$ClassID-1)+(df$Value-df$Bnd1)/(df$Bnd2-df$Bnd1))
-  df$EQR<-ifelse(df$ClassID>5,1,df$EQR)
+  # truncate EQR values <0 or >1
+  df$EQR<-ifelse(df$EQR>1,1,df$EQR)
+  df$EQR<-ifelse(df$EQR<0,0,df$EQR)
   #Class cannot be better than "High":
   df$ClassID<-ifelse(df$ClassID>5,5,df$ClassID)
   df$Class<-ifelse(is.na(df$ClassID),NA,Categories[df$ClassID])
