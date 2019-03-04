@@ -88,14 +88,14 @@ CalculateIndicator <-
                    RiverPctPT        = df$BenthicDiatomsPctPT,
                    RiverTDI          = df$BenthicDiatomsTDI,
                    RiverACID         = df$BenthicDiatomsACID,
+                   RiverACIDEQR      = df$BenthicDiatomsACID,
                    RiverASPTEQR      = df$BenthicInvertebratesASPT,
                    RiverDJEQR        = df$BenthicInvertebratesDJ,
                    RiverMISAEQR      = df$BenthicInvertebratesMISA,
                    RiverVIX          = df$VIX,
                    RiverVIXh         = df$VIXh,
                    RiverVIXsm        = df$VIXsm,
-                   RiverVIXs        = df$VIXsm,  # Added CJM
-                   RiverVIXm        = df$VIXsm,  # Added CJM
+                   RiverVIXmorf      = df$VIXsm,
                    RiverTPEQR        = df$TP,
                    RiverOxygenSummer = df$O2_bot
     )
@@ -154,14 +154,14 @@ CalculateIndicator <-
                     RiverPctPT        = Aggregate_period,
                     RiverTDI          = Aggregate_period,
                     RiverACID         = Aggregate_period,
+                    RiverACIDEQR      = Aggregate_period_N_EQR,
                     RiverASPTEQR      = Aggregate_period_N_EQR,
                     RiverDJEQR        = Aggregate_period_N_EQR5,
                     RiverMISAEQR      = Aggregate_period_N_EQR,
                     RiverVIX          = Aggregate_period,
                     RiverVIXh         = Aggregate_period,
                     RiverVIXsm        = Aggregate_period,
-                    RiverVIXs        = Aggregate_period, # Added CJM
-                    RiverVIXm        = Aggregate_period, # Added CJM
+                    RiverVIXmorf      = Aggregate_period,
                     RiverTPEQR        = Aggregate_period_P_EQR,
                     RiverOxygenSummer = Min_year
     )
@@ -219,14 +219,14 @@ CalculateIndicator <-
                     RiverPctPT        = logit_w_replace,
                     RiverTDI          = identity,
                     RiverACID         = identity,
+                    RiverACIDEQR      = identity,
                     RiverASPTEQR      = identity,
                     RiverDJEQR        = identity,
                     RiverMISAEQR      = identity,
                     RiverVIX          = logit_w_replace,
                     RiverVIXh         = logit_w_replace,
                     RiverVIXsm        = logit_w_replace,
-                    RiverVIXs        = logit_w_replace, # Added CJM
-                    RiverVIXm        = logit_w_replace, # Added CJM
+                    RiverVIXmorf      = logit_w_replace,
                     RiverTPEQR        = log,
                     RiverOxygenSummer = identity
     )    
@@ -284,14 +284,14 @@ CalculateIndicator <-
                         RiverPctPT        = plogis,
                         RiverTDI          = identity,
                         RiverACID         = identity,
+                        RiverACIDEQR      = identity,
                         RiverASPTEQR      = identity,
                         RiverDJEQR        = identity,
                         RiverMISAEQR      = identity,
                         RiverVIX          = plogis,
                         RiverVIXh         = plogis,
                         RiverVIXsm        = plogis,
-                        RiverVIXs        = plogis, # Added CJM
-                        RiverVIXm        = plogis, # Added CJM
+                        RiverVIXmorf      = plogis,
                         RiverTPEQR        = exp,
                         RiverOxygenSummer = identity
     ) 
@@ -316,7 +316,7 @@ CalculateIndicator <-
       df <- mutate(df,RefCond = RefCond)
     }
     # setting RefCond and MaxCond depending for lake and river indicators, i.e. RefCond in ParameterVector[1] and MaxCond in ParameterVector[2]
-    if (Indicator %in% c("LakeBiovolEQR","LakeChlaEQR","LakePTIEQR","LakeNphytspecEQR","LakeTMIEQR","LakeIPSEQR","LakeASPTEQR","LakeBQIEQR","LakeMILAEQR","LakeEQR8","LakeAindexW5","LakeEindexW3","LakeTPEQR","LakeSecchiEQR",
+    if (Indicator %in% c("LakeBiovolEQR","LakeChlaEQR","LakePTIEQR","LakeNphytspecEQR","LakeTMIEQR","LakeIPSEQR","LakeACIDEQR","LakeASPTEQR","LakeBQIEQR","LakeMILAEQR","LakeEQR8","LakeAindexW5","LakeEindexW3","LakeTPEQR","LakeSecchiEQR",
                          "RiverIPSEQR","RiverASPTEQR","RiverDJEQR","RiverMISAEQR","RiverTPEQR")) {
       RefCond <- mat.or.vec(nrow(df), 1)
       MaxCond <- mat.or.vec(nrow(df), 1)
