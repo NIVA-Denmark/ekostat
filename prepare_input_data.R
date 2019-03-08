@@ -26,7 +26,7 @@ dfcmsmdi<-dfcmsmdi %>%
 df_SMHI<-read.table(file="data/from_SMHI/WATERS_export.txt",header=T,stringsAsFactors=F,sep="\t")
 
 df_SMHI <- df_SMHI %>%
-  select(WB_ID=MS_CD,EU_CD=WB_ID,station=Station,date=Date,year,month,time=Time,station_depth,sali,biovol,institution=Institution,depth=DEPH,
+  select(WB_ID,EU_CD=VISS_EU_CD,station=Station,date=Date,year,month,time=Time,station_depth,sali,biovol,institution=Institution,depth=DEPH,
          BQI,DIN,DIP,TN,TP,chla=Chla,secchi=Secchi,HypoxicAreaPct,O2_bot) %>%
   mutate(date=as.Date(date))
 
