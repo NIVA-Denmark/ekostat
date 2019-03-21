@@ -14,7 +14,7 @@ source("IndicatorSelectionSweden.R")
 #dbWriteTable(conn=db,name="WB_info",df_wb_unique,overwrite=T,append=F,row.names=FALSE)
 
 # Options for indicator calculations
-nSimMC <- 1000
+nSimMC <- 2
 #number of Monte Carlo simulations
 
 
@@ -70,9 +70,9 @@ ind<-paste0(ind$Indicator)
 #wbselect<-c("SE654141-124734","SE638475-137575","SE694939-144561","SE632601-145366")
 #wblistR <- wblistR %>% left_join(df_WB_EU,by="WB_ID") %>% filter(EU_CD %in% wbselect)
 
-AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T,logfile="log_C.txt",iStart=1)
-#AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T,logfile="log_L.txt")
-#AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,nSimMC,bReplaceResults=T,logfile="log_R.txt")
+AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_C.txt",iStart=1)
+AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_L.txt")
+AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_R.txt")
 
 
 

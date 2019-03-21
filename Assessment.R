@@ -6,7 +6,7 @@
 #'
 
                             
-AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,nSimMC=1000,bReplaceResults=T,logfile="",iStart=1){
+AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,nSimMC=1000,bReplaceResults=T,logfile="",iStart=1){
   
   start_time <- Sys.time()
   if(logfile!=""){
@@ -43,7 +43,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
       typology_varcomp<-substr(typology,1,1)
     }
 
-        AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp)
+        AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp)
     
     ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /(1+iWB-iStart)
     cat(paste0(" done at: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
@@ -96,7 +96,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
 #' 
 #'             
 Assessment <-
-  function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,typology,typology_varcomp) {
+  function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp) {
     #browser()
     pcount<-nrow(plist)
     df_months<- df_bounds %>% distinct(Indicator,Type,Months)
@@ -156,7 +156,7 @@ Assessment <-
             
             res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,nsim)
             #cat(paste0("    Indicator: ",iInd,"  res=",res$result_code,"\n"))
-            
+            #browser()
             ErrDesc<-ErrorDescription(res$result_code,BoundsList$MinYear[1],BoundsList$MinPerYear[1])
             
             if(res$result_code %in% c(0,-1,-2)){
@@ -174,6 +174,12 @@ Assessment <-
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
               df_temp$Note<-ErrDesc
+              
+              #Observation Count and station list
+              var<-IndicatorVariable(iInd,df_var)
+              ObsInfo<-ObsInfo(df,var)
+              df_temp$nobs <- ObsInfo[[1]]
+              df_temp$stns <- ObsInfo[[2]]
               
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -339,7 +345,7 @@ Assessment <-
     # Get indicator categories based on mean values
 
     if(exists("res_ind")){
-    res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code,Note)
+    res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code,Note,nobs,stns)
     #res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
     res_ind<- res_ind %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
                                     by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
@@ -711,3 +717,27 @@ ErrorDescription<-function(ErrCode,nyear=0,nobs=0){
   else if (ErrCode==-96) return("missing boundary values")
   else return("")
 } 
+
+
+ObsInfo<-function(df,var){
+  names(df)[names(df)==var]<-"xvar"
+  df <- df %>%
+    filter(!is.na(xvar))
+  nobs<-nrow(df)
+  stns<-df %>% 
+    arrange(station) %>%
+    distinct(station)
+  stns <- paste(stns$station,collapse = ",")
+  return(list(nobs=nobs,stns=stns))
+}
+
+IndicatorVariable<-function(indicator,df_var){
+  df<-df_var %>%
+    filter(Indicator==indicator)
+  if(nrow(df)){
+    var<-df[1,"var"]
+  }else{
+    var<-""
+  }
+  return(var)
+}
