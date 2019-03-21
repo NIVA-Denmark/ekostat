@@ -251,7 +251,9 @@ Assessment <-
                                   Type=typology,
                                   Period=plist$Period[iPeriod],
                                   Code=res$result_code,
-                                  Note=ErrDesc)
+                                  Note=ErrDesc,
+                                  nobs=NA,
+                                  stns="")
               
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -720,9 +722,9 @@ ErrorDescription<-function(ErrCode,nyear=0,nobs=0){
 
 
 ObsInfo<-function(df,var){
-  names(df)[names(df)==var]<-"xvar"
+  names(df)[names(df)==var]<-"obsvar"
   df <- df %>%
-    filter(!is.na(xvar))
+    filter(!is.na(obsvar))
   nobs<-nrow(df)
   stns<-df %>% 
     arrange(station) %>%
