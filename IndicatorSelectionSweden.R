@@ -306,15 +306,28 @@ CalculateIndicator <-
     df <- Filter_df(df,MonthInclude,startyear,endyear) 
     # setting RefCond depending on salinity for indicators with salinity correction
     RefCond <- mat.or.vec(nrow(df), 1)
-    if (Indicator %in% c("CoastChlaEQR","CoastBiovolEQR","CoastSecchiEQR","CoastDINwinterEQR","CoastDIPwinterEQR","CoastTNsummerEQR","CoastTPsummerEQR","CoastTNwinterEQR","CoastTPwinterEQR")) {
+    if (Indicator %in% c("CoastDINwinterEQR","CoastDIPwinterEQR","CoastTNsummerEQR","CoastTPsummerEQR","CoastTNwinterEQR","CoastTPwinterEQR")) {
       df <- filter(df,!is.na(sali))
       df$sali <- ifelse(df$sali<2,2,df$sali) # Set RefCond for sali<2 to the value at sali=2
       df$sali <- ifelse(df$sali>ParameterVector[3],ParameterVector[3],df$sali) # Set RefCond for sali higher than outer to the value at sali=outer boundary
       RefCond <- ParameterVector[1]+ParameterVector[2]*df$sali
-      if (Indicator %in% c("CoastChlaEQR","CoastBiovolEQR","CoastSecchiEQR"))
-         RefCond <- ParameterVector[4]+ParameterVector[5]*RefCond^ParameterVector[6]
+    }
+    if (Indicator %in% c("CoastChlaEQR","CoastBiovolEQR","CoastSecchiEQR")) {
+      # Calculate RefCond for Chla, Biovol or Secchi
+      if (ParameterVector[5] == 0) { # Use RefCond table value in ParameterVector[4]
+        RefCond <- ParameterVector[4]
+      } 
+      else { # Use RefCond derived from TNref
+        df <- filter(df,!is.na(sali)) 
+        df$sali <- ifelse(df$sali<2,2,df$sali) # Set RefCond for sali<2 to the value at sali=2
+        df$sali <- ifelse(df$sali>ParameterVector[3],ParameterVector[3],df$sali) # Set RefCond for sali higher than outer to the value at sali=outer boundary
+        # Calculate RefCond for TN summer
+        RefCond <- ParameterVector[1]+ParameterVector[2]*df$sali
+        RefCond <- ParameterVector[4]+ParameterVector[5]*RefCond^ParameterVector[6]
+      }
       df <- mutate(df,RefCond = RefCond)
     }
+    
     # setting RefCond and MaxCond depending for lake and river indicators, i.e. RefCond in ParameterVector[1] and MaxCond in ParameterVector[2]
     if (Indicator %in% c("LakeBiovolEQR","LakeChlaEQR","LakePTIEQR","LakeNphytspecEQR","LakeTMIEQR","LakeIPSEQR","LakeACIDEQR","LakeASPTEQR","LakeBQIEQR","LakeMILAEQR","LakeEQR8","LakeAindexW5","LakeEindexW3","LakeTPEQR","LakeSecchiEQR",
                          "RiverIPSEQR","RiverASPTEQR","RiverDJEQR","RiverMISAEQR","RiverTPEQR")) {
