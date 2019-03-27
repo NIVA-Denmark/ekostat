@@ -7,19 +7,21 @@ library(RSQLite)
 # http://viss.lansstyrelsen.se/Waters.aspx?waterMSCD=WA57943788
 
 # ------------------ database path --------------------------------------------------
-dbpath<-"../efs/ekostat/ekostat3.db"
-writeToDB=F
+dbpath<-"../efs/ekostat/ekostat4.db"
+writeToDB=T
 
 # -------------------- Read tyoplogy information from DropBox -----------------------
 
 datafolder<-"C:/Users/CJM/Dropbox/WATERS_tools/tables_for_waters_tool/new_typologies/"
 
 xlfile_c<-"coast/new_coastal.xlsx"   #   654 coastal waterbodies
-xlfile_l<-"lakes/lakes_new.xlsx"     #  7540 lake waterbodies
+#xlfile_l<-"lakes/lakes_new.xlsx"     #  7540 lake waterbodies
+xlfile_l<-"lakes/lakes_viss_typology.xlsx"     #  7540 lake waterbodies
 xlfile_s<-"streams/streams_new.xlsx" # 15783 stream waterbodies
 
 df_c<-read_excel(paste0(datafolder,xlfile_c), sheet = "Vatten-Parameter",col_names = TRUE)
-df_l<-read_excel(paste0(datafolder,xlfile_l), sheet = "Vatten-Parameter",col_names = TRUE)
+#df_l<-read_excel(paste0(datafolder,xlfile_l), sheet = "Vatten-Parameter",col_names = TRUE)
+df_l<-read_excel(paste0(datafolder,xlfile_l), sheet = "Sheet1",col_names = TRUE)
 df_s<-read_excel(paste0(datafolder,xlfile_s), sheet = "Vatten-Parameter",col_names = TRUE)
 
 
