@@ -33,7 +33,7 @@ wblistR<-df_WB %>%
   distinct(CLR,WB_ID,Type) %>%
   filter(CLR=="River") 
 
-#List of periods to be assessed
+#List of periods to be assessed from prepare_input_data.R
 
 # dfc - coastal water measurements
 # dfl - lake measurements
