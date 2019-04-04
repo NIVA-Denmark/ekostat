@@ -177,7 +177,9 @@ Assessment <-
               
               #Observation Count and station list
               var<-IndicatorVariable(iInd,df_var)
-              ObsInfo<-ObsInfo(df,var)
+            
+              monthlist<-IndicatorMonths(df_months,typology,iInd)
+              ObsInfo<-ObsInfo(df,var,monthlist)
               df_temp$nobs <- ObsInfo[[1]]
               df_temp$stns <- ObsInfo[[2]]
               
@@ -721,10 +723,11 @@ ErrorDescription<-function(ErrCode,nyear=0,nobs=0){
 } 
 
 
-ObsInfo<-function(df,var){
+ObsInfo<-function(df,var,monthlist=c(1,2,3,4,5,6,7,8,9,10,11,12)){
   names(df)[names(df)==var]<-"obsvar"
   df <- df %>%
-    filter(!is.na(obsvar))
+    filter(!is.na(obsvar)) %>%
+    filter(month %in% monthlist)
   nobs<-nrow(df)
   stns<-df %>% 
     arrange(station) %>%
