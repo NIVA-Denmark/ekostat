@@ -12,20 +12,20 @@ source("IndicatorSelectionSweden.R")
 
 
 # Options for indicator calculations
-nSimMC <- 1000
+nSimMC <- 3
 #number of Monte Carlo simulations
 
 
-outputdbC<-"output/ekostat_C.db"
+outputdbC<-"output/ekostat_C_count.db"
 outputdbL<-"output/ekostat_L.db"
 outputdbR<-"output/ekostat_R.db"
 
 
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
-  filter(CLR=="Coast")
-
-wblistL<-df_WB %>% 
+  filter(CLR=="Coast") %>% 
+  
+  wblistL<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
   filter(CLR=="Lake") 
 
@@ -46,10 +46,7 @@ ind<-df_indicators %>%
 
 ind<-paste0(ind$Indicator)
 
-
-AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=F,logfile="log_C.txt",iStart=1)
-AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_L.txt")
-AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_R.txt")
+AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_C_obs_count.txt")
 
 
 
