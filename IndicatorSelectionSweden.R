@@ -325,8 +325,8 @@ CalculateIndicator <-
         RefCond <- ParameterVector[1]+ParameterVector[2]*df$sali
         RefCond <- ParameterVector[4]+ParameterVector[5]*RefCond^ParameterVector[6]
       }
-      df <- mutate(df,RefCond = RefCond)
-    }
+     }
+     df <- mutate(df,RefCond = RefCond)
     
     # setting RefCond and MaxCond depending for lake and river indicators, i.e. RefCond in ParameterVector[1] and MaxCond in ParameterVector[2]
     if (Indicator %in% c("LakeBiovolEQR","LakeChlaEQR","LakePTIEQR","LakeNphytspecEQR","LakeTMIEQR","LakeIPSEQR","LakeACIDEQR","LakeASPTEQR","LakeBQIEQR","LakeMILAEQR","LakeEQR8","LakeAindexW5","LakeEindexW3","LakeTPEQR","LakeSecchiEQR",
@@ -357,6 +357,7 @@ CalculateIndicator <-
     # Estimate mean of the transformed observation for simulation
     alpha <- df %>% group_by(year) %>% summarise(mean = mean(g_fun(xvar),na.rm=TRUE))
     # Calculate indicator
+    
     mu_indicator <- f_fun(df)
     # Return from function if no observations in Jan-May (result_code=-91) or Jun-Dec (result_code=-92) or less than 5 obs for BQI (result_code=-93)
     if (mu_indicator$error_code != 0) return(list(result_code=mu_indicator$error_code))
