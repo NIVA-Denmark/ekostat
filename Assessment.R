@@ -648,7 +648,7 @@ FilterDepth<-function(df,depths){
   if(pos>0){
     z1<-as.numeric(substr(depths,1,pos-1))
     z2<-as.numeric(substr(depths,pos+1,99))
-    df<-df %>% filter(station_depth > z1) %>% filter(station_depth < z2)
+    df<-df %>% filter(station_depth >= z1) %>% filter(station_depth <= z2)
   }else{
     z<-as.numeric(substr(depths,2,99))
     if(substr(depths,1,1)=="<"){
