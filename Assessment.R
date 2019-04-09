@@ -411,13 +411,9 @@ Assessment <-
 
     res_rnd_count<-spread(res_rnd_count, ClassID, n, fill = NA)
   
-    #res_rnd<-res_rnd %>% left_join(select(res_ind,WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,EQRavg=EQR,ClassAvg=Class), 
-    #                               by=c("WB_ID"="WB_ID","Type"="Type","Period"="Period",
-    #                                 "Indicator"="Indicator","IndSubtype"="IndSubtype")) 
-    
     Categories<-c("Bad","Poor","Mod","Good","High","Ref")
-    res_rnd$Class<-Categories[res_rnd$ClassID]
-    
+    res_rnd <- res_rnd %>% 
+      mutate(Class=ifelse(is.na(Class),NA,Categories[ClassID]))
     res_rnd<-res_rnd %>% select(WB_ID,Period,Indicator,IndSubtype,sim,Value,ClassID,Class,EQR)
     
     res_ind<-left_join(res_ind,res_rnd_count,by = c("WB_ID", "Type", "Period", "Indicator", "IndSubtype"))
