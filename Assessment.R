@@ -99,13 +99,6 @@ Assessment <-
   function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp) {
     #browser()
     pcount<-nrow(plist)
-    if(iInd=="CoastHypoxicArea"){
-      df_months<- df_bounds_WB %>% distinct(Indicator,Type,Months)
-    }
-    else{
-      df_months<- df_bounds %>% distinct(Indicator,Type,Months)
-    }
-    MonthInclude <- IndicatorMonths(df_months,typology,indicator)
     
       for(iPeriod in 1:pcount){
         #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
@@ -124,8 +117,10 @@ Assessment <-
         
         # Loop through selected indicators
         for(iInd in IndicatorListSubset){
+
           if(iInd=="CoastHypoxicArea"){
             BoundsList<-df_bounds_WB %>% filter(MS_CD==WB,Indicator==iInd)
+            MonthInclude <- IndicatorMonths(BoundsList,NA,iInd)
           }else{
             # For LakeBiovol, LakeBiovolEQR, LakeChla, LakeChlaEQR use Gony boundaries, if biovol Gony >5% of biovol total
             if(iInd %in% c("LakeBiovol", "LakeBiovolEQR", "LakeChla", "LakeChlaEQR")){
@@ -144,7 +139,10 @@ Assessment <-
             }else{
               BoundsList<-df_bounds %>% filter(Type==typology,Indicator==iInd)
             }
+            df_months<- df_bounds %>% distinct(Indicator,Type,Months)
+            MonthInclude <- IndicatorMonths(df_months,typology,indicator)
           }
+          
           
           if(nrow(BoundsList)>0){ 
           IndSubtypes<-distinct(BoundsList,Depth_stratum)
@@ -184,8 +182,8 @@ Assessment <-
               #Observation Count and station list
               var<-IndicatorVariable(iInd,df_var)
             
-              monthlist<-IndicatorMonths(df_months,typology,iInd)
-              ObsInfo<-ObsInfo(df,var,monthlist)
+              #monthlist<-IndicatorMonths(df_months,typology,iInd)
+              ObsInfo<-ObsInfo(df,var,MonthInclude)
               df_temp$nobs <- ObsInfo[[1]]
               df_temp$stns <- ObsInfo[[2]]
               
@@ -355,10 +353,19 @@ Assessment <-
     # Get indicator categories based on mean values
 
     if(exists("res_ind")){
+      
     res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code,Note,nobs,stns)
     #res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
-    res_ind<- res_ind %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
-                                    by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    if(iInd=="CoastHypoxicArea"){
+      res_ind<- res_ind %>% 
+        left_join(select(df_bounds_WB,MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                                      by=c("Indicator"="Indicator","Type"="Type","WB_ID"="MS_CD"))
+      
+    }else{
+      res_ind<- res_ind %>% 
+        left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                                      by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    }
     #res_ind<- res_ind %>% 
     #  select(-c(ParameterVector_1:ParameterVector_10,V_WBperiod,V_WBannual))
                                     
@@ -372,10 +379,16 @@ Assessment <-
     # Get indicator categories for MC results
     res_rnd<- res_rnd %>% select(WB_ID,Type,Period,Indicator,IndSubtype,sim,Estimate,Code)
     
-    
-    res_rnd<- res_rnd %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst), 
-                                    by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
-    
+    if(iInd=="CoastHypoxicArea"){
+      res_rnd<- res_rnd %>% 
+        left_join(select(df_bounds_WB,MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                  by=c("Indicator"="Indicator","Type"="Type","WB_ID"="MS_CD"))
+      
+    }else{
+      res_rnd<- res_rnd %>% 
+        left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst), 
+                  by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
+    }
     #res_rnd<- res_rnd %>% left_join(df_bounds, 
     #                                by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
     names(res_rnd)[names(res_rnd)=="Estimate"]<-"Value"
