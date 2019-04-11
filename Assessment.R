@@ -358,8 +358,8 @@ Assessment <-
     #res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
     if(iInd=="CoastHypoxicArea"){
       res_ind<- res_ind %>% 
-        left_join(select(df_bounds_WB,MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
-                                      by=c("Indicator"="Indicator","Type"="Type","WB_ID"="MS_CD"))
+        left_join(select(df_bounds_WB,MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                                      by=c("Indicator"="Indicator","WB_ID"="MS_CD"))
       
     }else{
       res_ind<- res_ind %>% 
@@ -381,8 +381,8 @@ Assessment <-
     
     if(iInd=="CoastHypoxicArea"){
       res_rnd<- res_rnd %>% 
-        left_join(select(df_bounds_WB,MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
-                  by=c("Indicator"="Indicator","Type"="Type","WB_ID"="MS_CD"))
+        left_join(select(df_bounds_WB,MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                  by=c("Indicator"="Indicator","WB_ID"="MS_CD"))
       
     }else{
       res_rnd<- res_rnd %>% 
