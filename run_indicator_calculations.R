@@ -12,18 +12,26 @@ source("IndicatorSelectionSweden.R")
 
 
 # Options for indicator calculations
-nSimMC <- 1000
+nSimMC <- 10
 #number of Monte Carlo simulations
 
 
-outputdbC<-"output/ekostat_C_BQI.db"
+outputdbC<-"output/ekostat_C_hypox.db"
 outputdbL<-"output/ekostat_L.db"
 outputdbR<-"output/ekostat_R.db"
 
 
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
-  filter(CLR=="Coast")
+  filter(CLR=="Coast") %>%
+  filter(WB_ID %in% c("WA46670058"))
+
+    # filter(WB_ID %in% c("WA46670058","WA43270311","WA23971566",
+    #                   "WA29111809",
+    #                   "WA46408217","WA68382937","WA36243146",
+    #                   "WA17695227","WA55983181","WA12817029",
+    #                   "WA99366628","WA52813004","WA61585185"
+    #                   ))
 
 wblistL<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
@@ -45,9 +53,9 @@ ind<-df_indicators %>%
   filter(!Indicator %in% c("RiverpHchange"))
 
 ind<-paste0(ind$Indicator)
-ind <- c("CoastBQI")
+ind <- c("CoastHypoxicArea")
 
-AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_C.txt",iStart=1)
+AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_C_hypox.txt",iStart=1)
 #AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_L.txt")
 #AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_R.txt")
 
