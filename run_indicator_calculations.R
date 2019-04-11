@@ -12,7 +12,7 @@ source("IndicatorSelectionSweden.R")
 
 
 # Options for indicator calculations
-nSimMC <- 10
+nSimMC <- 1000
 #number of Monte Carlo simulations
 
 
@@ -24,14 +24,12 @@ outputdbR<-"output/ekostat_R.db"
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
   filter(CLR=="Coast") %>%
-  filter(WB_ID %in% c("WA46670058"))
-
-    # filter(WB_ID %in% c("WA46670058","WA43270311","WA23971566",
-    #                   "WA29111809",
-    #                   "WA46408217","WA68382937","WA36243146",
-    #                   "WA17695227","WA55983181","WA12817029",
-    #                   "WA99366628","WA52813004","WA61585185"
-    #                   ))
+  filter(WB_ID %in% c("WA46670058","WA43270311","WA23971566",
+                      "WA29111809",
+                      "WA46408217","WA68382937","WA36243146",
+                      "WA17695227","WA55983181","WA12817029",
+                      "WA99366628","WA52813004","WA61585185"
+                      ))
 
 wblistL<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
