@@ -99,8 +99,14 @@ Assessment <-
   function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp) {
     #browser()
     pcount<-nrow(plist)
-    df_months<- df_bounds %>% distinct(Indicator,Type,Months)
-      
+    if(iInd=="CoastHypoxicArea"){
+      df_months<- df_bounds_WB %>% distinct(Indicator,Type,Months)
+    }
+    else{
+      df_months<- df_bounds %>% distinct(Indicator,Type,Months)
+    }
+    MonthInclude <- IndicatorMonths(df_months,typology,indicator)
+    
       for(iPeriod in 1:pcount){
         #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
         dfp <- df_all %>% filter(Period == plist$Period[iPeriod])
@@ -154,7 +160,7 @@ Assessment <-
               }
             }
             
-            res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,nsim)
+            res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,MonthInclude,nsim)
             #cat(paste0("    Indicator: ",iInd,"  res=",res$result_code,"\n"))
             #browser()
             ErrDesc<-ErrorDescription(res$result_code,BoundsList$MinYear[1],BoundsList$MinPerYear[1])
@@ -410,11 +416,10 @@ Assessment <-
     res_rnd_count$n <- res_rnd_count$n/nsim
 
     res_rnd_count<-spread(res_rnd_count, ClassID, n, fill = NA)
-
+  
     Categories<-c("Bad","Poor","Mod","Good","High","Ref")
     res_rnd <- res_rnd %>% 
       mutate(Class=ifelse(is.na(Class),NA,Categories[ClassID]))
-    
     res_rnd<-res_rnd %>% select(WB_ID,Period,Indicator,IndSubtype,sim,Value,ClassID,Class,EQR)
     
     res_ind<-left_join(res_ind,res_rnd_count,by = c("WB_ID", "Type", "Period", "Indicator", "IndSubtype"))
@@ -600,13 +605,12 @@ VarianceComponents<-function(df_indicators,df_variances,typology,indicator){
 #' IndicatorResults
 #' 
 #' 
-IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,indicator,startyear,endyear,nsim){
+IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,indicator,startyear,endyear,MonthInclude,nsim){
   missing <- switch(indicator,0,
                     ChlaEQR      = 0.9,
                     TNsummer     = 50,
                     TNwinter     = 50
   )
-  df_months<- df_bounds %>% distinct(Indicator,Type,Months)
   #RefCond_sali<-SalinityReferenceValues(df_bounds,typology,indicator,missing)
   ParameterVector<-GetParameterVector(df_bounds,typology,indicator,missing)
   
@@ -627,8 +631,7 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   
   
   MinObsList<-GetMinObs(df_bounds,typology,indicator,missing)
-  MonthInclude <- IndicatorMonths(df_months,typology,indicator)
-  #browser()
+
   variance_list<- VarianceComponents(df_indicators,df_variances,typology_varcomp,indicator)
 
   res<-CalculateIndicator(indicator,df,ParameterVector,MinObsList,variance_list,MonthInclude,startyear,endyear,n_iter=nsim)
