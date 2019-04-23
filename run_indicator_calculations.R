@@ -23,7 +23,7 @@ outputdbR<-"output/ekostat_R.db"
 
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
-  filter(CLR=="Coast") %>% 
+  filter(CLR=="Coast")
   
   wblistL<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
