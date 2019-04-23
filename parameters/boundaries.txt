@@ -105,7 +105,7 @@ Coastal	CoastChlaEQR	No unit	7,8		Egentliga Östersjön	12n	Östergötlands samt Sto
 Coastal	CoastChlaEQR	No unit	7,8		Egentliga Östersjön	12s	Östergötlands samt Stockholms skärgård, mellankustvatten	3	2	1	0.8	0.67	0.35	0.15	0	31.7	-2.775	6	0.26	0.0051	1.9974	#N/A	#N/A	#N/A	#N/A	0.0225	0.0367	61
 Coastal	CoastChlaEQR	No unit	7,8		Egentliga Östersjön	13	Östergötlands inre skärgård	3	2	1	0.8	0.67	0.35	0.15	0	31.7	-2.775	6	0.26	0.0051	1.9974	#N/A	#N/A	#N/A	#N/A	0.0225	0.0367	9
 Coastal	CoastChlaEQR	No unit	7,8		Egentliga Östersjön	14	Östergötlands, yttre kustvatten	3	2	1	0.8	0.67	0.35	0.15	0	31.7	-2.775	6	1.4	0	1	#N/A	#N/A	#N/A	#N/A	0.0150	0.0256	10
-Coastal	CoastChlaEQR	No unit	7,8		Egentliga Östersjön	15	Stockholms skärgård, yttre kustvatten	3	2	1	0.8	0.67	0.35	0.15	0	23.9	-1.483	6	14	0	1	#N/A	#N/A	#N/A	#N/A	0.0150	0.0256	22
+Coastal	CoastChlaEQR	No unit	7,8		Egentliga Östersjön	15	Stockholms skärgård, yttre kustvatten	3	2	1	0.8	0.67	0.35	0.15	0	23.9	-1.483	6	1.4	0	1	#N/A	#N/A	#N/A	#N/A	0.0150	0.0256	22
 Coastal	CoastChlaEQR	No unit	7,8		Egentliga Östersjön	24	Stockholms inre skärgård og Hallsfjärden	3	2	1	0.8	0.67	0.35	0.15	0	23.9	-1.483	6	0.26	0.0051	1.9974	#N/A	#N/A	#N/A	#N/A	0.0225	0.0367	19
 Coastal	CoastChlaEQR	No unit	7,8		Bottenhavet	16	Södra Bottenhavet, inre kustvatten	3	2	1	0.78	0.61	0.33	0.14	0	20.4	-0.870	5	1.4	0	1	#N/A	#N/A	#N/A	#N/A	0.0225	0.0367	40
 Coastal	CoastChlaEQR	No unit	7,8		Bottenhavet	17	Södra Bottenhavet, yttre kustvatten	3	2	1	0.8	0.6	0.32	0.14	0	20.4	-0.870	5	1.2	0	1	#N/A	#N/A	#N/A	#N/A	0.0150	0.0256	13
@@ -165,7 +165,7 @@ Coastal	CoastBiovolEQR	No unit	7,8		Bottenhavet	16	Södra Bottenhavet, inre kustv
 Coastal	CoastBiovolEQR	No unit	7,8		Bottenhavet	17	Södra Bottenhavet, yttre kustvatten	3	2	1	0.67	0.45	0.24	0.08	0	20.4	-0.870	5	0.18	0	1	#N/A	#N/A	#N/A	#N/A	0.0820	0.0306	13
 Coastal	CoastBiovolEQR	No unit	7,8		Bottenhavet	18	Norra Bottenhavet, Höga kustens inre kustvatten	3	2	1	0.66	0.45	0.24	0.08	0	16.2	-0.042	5	0.21	0	1	#N/A	#N/A	#N/A	#N/A	0.0619	0.0611	43
 Coastal	CoastBiovolEQR	No unit	7,8		Bottenhavet	19	Norra Bottenhavet, Höga kustens yttre kustvatten	3	2	1	0.67	0.45	0.24	0.08	0	16.2	-0.042	5	0.18	0	1	#N/A	#N/A	#N/A	#N/A	0.0820	0.0306	13
-Coastal	CoastBiovolEQR	No unit	7,8		Bottenviken	20	Norra Kvarkens inre kustvatten	3	2	1	0.64	0.43	0.24	0.08	0	15.2	0.164	5	316	0	1	#N/A	#N/A	#N/A	#N/A	0.0619	0.0611	15
+Coastal	CoastBiovolEQR	No unit	7,8		Bottenviken	20	Norra Kvarkens inre kustvatten	3	2	1	0.64	0.43	0.24	0.08	0	15.2	0.164	5	0.16	0	1	#N/A	#N/A	#N/A	#N/A	0.0619	0.0611	15
 Coastal	CoastBiovolEQR	No unit	7,8		Bottenviken	21	Norra Kvarkens yttre kustvatten	3	2	1	0.56	0.38	0.2	0.07	0	15.2	0.164	5	0.15	0	1	#N/A	#N/A	#N/A	#N/A	0.0820	0.0306	2
 Coastal	CoastBiovolEQR	No unit	7,8		Bottenviken	22	Bottenviken, inre kustvatten	3	2	1	0.64	0.43	0.24	0.08	0	17.2	-0.060	3	0.16	0	1	#N/A	#N/A	#N/A	#N/A	0.0619	0.0611	86
 Coastal	CoastBiovolEQR	No unit	7,8		Bottenviken	23	Bottenviken, yttre kustvatten	3	2	1	0.56	0.38	0.2	0.07	0	17.2	-0.060	3	0.15	0	1	#N/A	#N/A	#N/A	#N/A	0.0820	0.0306	10
