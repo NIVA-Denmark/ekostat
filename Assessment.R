@@ -42,7 +42,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     }else{
       typology_varcomp<-substr(typology,1,1)
     }
-
+        
         AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp)
     
     ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /(1+iWB-iStart)
@@ -99,13 +99,8 @@ Assessment <-
   function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp) {
     #browser()
     pcount<-nrow(plist)
-    if(iInd=="CoastHypoxicArea"){
-      df_months<- df_bounds_WB %>% distinct(Indicator,Type,Months)
-    }
-    else{
-      df_months<- df_bounds %>% distinct(Indicator,Type,Months)
-    }
-    MonthInclude <- IndicatorMonths(df_months,typology,indicator)
+
+    
     
       for(iPeriod in 1:pcount){
         #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
@@ -126,7 +121,9 @@ Assessment <-
         for(iInd in IndicatorListSubset){
           if(iInd=="CoastHypoxicArea"){
             BoundsList<-df_bounds_WB %>% filter(MS_CD==WB,Indicator==iInd)
+            df_months<- df_bounds_WB %>% distinct(Indicator,Type,Months)
           }else{
+            df_months<- df_bounds %>% distinct(Indicator,Type,Months)
             # For LakeBiovol, LakeBiovolEQR, LakeChla, LakeChlaEQR use Gony boundaries, if biovol Gony >5% of biovol total
             if(iInd %in% c("LakeBiovol", "LakeBiovolEQR", "LakeChla", "LakeChlaEQR")){
               biovolmean<-mean(dfp$biovol,na.rm=TRUE)
@@ -145,6 +142,8 @@ Assessment <-
               BoundsList<-df_bounds %>% filter(Type==typology,Indicator==iInd)
             }
           }
+          
+          MonthInclude <- IndicatorMonths(df_months,typology,iInd)
           
           if(nrow(BoundsList)>0){ 
           IndSubtypes<-distinct(BoundsList,Depth_stratum)
@@ -182,12 +181,10 @@ Assessment <-
               df_temp$Note<-ErrDesc
               
               #Observation Count and station list
-              var<-IndicatorVariable(iInd,df_var)
-            
-              monthlist<-IndicatorMonths(df_months,typology,iInd)
-              ObsInfo<-ObsInfo(df,var,monthlist)
-              df_temp$nobs <- ObsInfo[[1]]
-              df_temp$stns <- ObsInfo[[2]]
+              
+              df_temp$nobs <-res$nobs
+              df_temp$stns <- res$stns
+              
               
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -723,7 +720,7 @@ ErrorDescription<-function(ErrCode,nyear=0,nobs=0){
 } 
 
 
-ObsInfo<-function(df,var,monthlist=c(1,2,3,4,5,6,7,8,9,10,11,12)){
+ObsInfo<-function(df,var,monthlist=c(1,2,3,4,5,6,7,8,9,10,11,12),varlistEQR=c("")){
   names(df)[names(df)==var]<-"obsvar"
   df <- df %>%
     filter(!is.na(obsvar)) %>%

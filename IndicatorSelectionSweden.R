@@ -420,7 +420,13 @@ CalculateIndicator <-
                          upper_5  = apply(simresyear,1,quantile,probs=0.975,na.rm=TRUE),
                          upper_1  = apply(simresyear,1,quantile,probs=0.995,na.rm=TRUE))
 
-    res <- list(period=period,annual=annual,indicator_sim=simres,result_code=flag)
+    stns<-df %>% 
+      arrange(station) %>%
+      distinct(station)
+    stns <- paste(stns$station,collapse = ",")
+    
+    res <- list(period=period,annual=annual,indicator_sim=simres,result_code=flag,nobs=ndf$n_obs,stns=stns)
+      
     return(res)
   }
 
