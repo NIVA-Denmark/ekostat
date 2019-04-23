@@ -16,7 +16,7 @@ nSimMC <- 1000
 #number of Monte Carlo simulations
 
 
-outputdbC<-"output/ekostat_C.db"
+outputdbC<-"output/ekostat_C_20190423.db"
 outputdbL<-"output/ekostat_L.db"
 outputdbR<-"output/ekostat_R.db"
 
@@ -47,9 +47,16 @@ ind<-df_indicators %>%
 ind<-paste0(ind$Indicator)
 
 
-AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=F,logfile="log_C.txt",iStart=1)
-AssessmentMultiple(wblistL,df_periods,dfl,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_L.txt")
-AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_R.txt")
+wblistC1<-wblistC %>% 
+  filter(Type=="15")
+wblistC2<-wblistC %>% 
+  filter(Type=="20")
+
+ind<-c("CoastChlaEQR")
+AssessmentMultiple(wblistC1,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile="log_C_20190423.txt",iStart=1)
+
+ind<-c("CoastBiovolEQR")
+AssessmentMultiple(wblistC2,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=F,logfile="log_C_20190423.txt",iStart=1)
 
 
 
