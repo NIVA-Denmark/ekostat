@@ -184,8 +184,8 @@ Assessment <-
               
               df_temp$nobs <-res$nobs
               df_temp$stns <- res$stns
-              
-              
+              df_temp$RefCondAvg <- res$RefCondAvg
+
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
               }else{
@@ -258,7 +258,8 @@ Assessment <-
                                   Code=res$result_code,
                                   Note=ErrDesc,
                                   nobs=NA,
-                                  stns="")
+                                  stns="",
+                                  RefCondAvg=NA)
               
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -352,13 +353,11 @@ Assessment <-
     # Get indicator categories based on mean values
 
     if(exists("res_ind")){
-    res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code,Note,nobs,stns)
-    #res_ind<- res_ind %>% left_join(df_bounds, by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
-    res_ind<- res_ind %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+    res_ind<- res_ind %>% select(WB_ID,Type,Period,Indicator,IndSubtype,Mean,StdErr,Code,Note,nobs,stns,RefCondAvg)
+
+        res_ind<- res_ind %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
                                     by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
-    #res_ind<- res_ind %>% 
-    #  select(-c(ParameterVector_1:ParameterVector_10,V_WBperiod,V_WBannual))
-                                    
+
     
     res_ind$Value<-res_ind$Mean
     
@@ -422,6 +421,16 @@ Assessment <-
     res_ind<-left_join(res_ind,res_rnd_count,by = c("WB_ID", "Type", "Period", "Indicator", "IndSubtype"))
     
     res_ind <- res_ind %>% left_join(select(df_indicators,Indicator,QualityElement,QualitySubelement,QEtype),by = "Indicator")
+    
+    listindEQR<-c("CoastBiovolEQR","CoastChlaEQR","CoastDINwinterEQR","CoastDIPwinterEQR",
+      "CoastSecchiEQR","CoastTNsummerEQR","CoastTNwinterEQR","CoastTPsummerEQR",
+      "CoastTPwinterEQR","LakeACIDEQR","LakeASPTEQR","LakeBiovolEQR","LakeBQIEQR",
+      "LakeChlaEQR","LakeEQR8","LakeIPSEQR","LakeMILAEQR","LakeNphytspecEQR",
+      "LakePTIEQR","LakeSecchiEQR","LakeTMIEQR","LakeTPEQR","RiverASPTEQR",
+      "RiverDJEQR","RiverIPSEQR","RiverMISAEQR","RiverTPEQR")
+
+    res_ind <- res_ind %>% 
+      mutate(RefCondAvg=ifelse(Code>-3,ifelse(Indicator %in% listindEQR,RefCondAvg,Ref),NA))
     
     names(res_ind)[names(res_ind)=="C1"]<-"fBad"
     names(res_ind)[names(res_ind)=="C2"]<-"fPoor"

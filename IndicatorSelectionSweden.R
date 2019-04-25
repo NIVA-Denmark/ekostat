@@ -425,7 +425,9 @@ CalculateIndicator <-
       distinct(station)
     stns <- paste(stns$station,collapse = ",")
     
-    res <- list(period=period,annual=annual,indicator_sim=simres,result_code=flag,nobs=ndf$n_obs,stns=stns)
+    RefCondAvg<- mean(df$RefCond,na.rm=T)
+
+    res <- list(period=period,annual=annual,indicator_sim=simres,result_code=flag,nobs=ndf$n_obs,stns=stns,RefCondAvg=RefCondAvg)
       
     return(res)
   }
