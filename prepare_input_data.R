@@ -33,6 +33,10 @@ df_SMHI <- df_SMHI %>%
 
 dfc<-bind_rows(df_SMHI,dfcmsmdi)
 
+# replace missing station depth values for BQI observations with the value from depth column
+dfc <- dfc %>%
+  mutate(station_depth=ifelse(is.na(station_depth),depth,station_depth))
+
 dfl<-bind_rows(dflwq,dflbio) %>%
   select(WB_ID=MS_CD,station,date,year,month,sali,obspoint,
          min_depth,max_depth,depth_min,depth_max,Nspecies_phytoplankton,
