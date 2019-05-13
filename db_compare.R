@@ -44,3 +44,14 @@ df2 <- select(df_WB,WB_ID,WB_Name) %>%
 
 df2X <- df2 %>% 
   filter(is.na(Code_old))
+
+df2diff <- df2 %>%
+  mutate(Mean=round(Mean,6),Mean_old=round(Mean_old,6)) %>%
+  mutate(diff=abs(Mean-Mean_old)) %>%
+  mutate(select=ifelse(diff>0,1,0)) %>%
+  mutate(select=ifelse(is.na(Code_old),1,select)) %>%
+  mutate(select=ifelse(Code< -2,0,select)) %>%
+  filter(select==1) %>%
+  select(-select)
+
+write.table(df2diff,file="ekostat_differences_20190513.csv",sep=";",row.names=F)
