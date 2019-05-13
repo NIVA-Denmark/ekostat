@@ -58,14 +58,16 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     resYear <- AssessmentResults[[4]]
     db <- dbConnect(SQLite(), dbname=outputdb)
     
-    if(!is.na(resAvg)){
+    #if(!is.na(resAvg)){
+    if(typeof(resAvg)=="list"){
+      if(nrow(resAvg)>0){
       WB <- resAvg %>% group_by(WB_ID,Type,Period,Region,Typename) %>% summarise()
       dbWriteTable(conn = db, name = "resMC", resMC, overwrite=bOVR,append=bAPP, row.names=FALSE)
       dbWriteTable(conn = db, name = "resYear", resYear, overwrite=bOVR,append=bAPP, row.names=FALSE)
       dbWriteTable(conn = db, name = "WB", WB, overwrite=bOVR,append=bAPP, row.names=FALSE)
       dbWriteTable(conn = db, name = "data", dfselect, overwrite=bOVR,append=bAPP, row.names=FALSE)
       dbWriteTable(conn = db, name = "resAvg", resAvg, overwrite=bOVR,append=bAPP, row.names=FALSE)
-    }
+    }}
     dbWriteTable(conn = db, name = "resErr", resErr, overwrite=bOVR,append=bAPP, row.names=FALSE)
     dbDisconnect(db)
     
@@ -357,7 +359,6 @@ Assessment <-
 
     if(exists("res_ind")){
 
-  #browser()
       res_ind_1<- res_ind %>% left_join(select(df_bounds_WB,WB_ID=MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
                                       by=c("Indicator"="Indicator","WB_ID"="WB_ID","Type"="Type","IndSubtype"="Depth_stratum")) %>%
         filter(!is.na(RefCond))
