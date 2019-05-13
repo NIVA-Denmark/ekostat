@@ -20,6 +20,21 @@ names(df_bound)[names(df_bound)=="Min.per.year"]<-"MinPerYear"
 names(df_bound_WB)[names(df_bound_WB)=="Min..year"]<-"MinYear"
 names(df_bound_WB)[names(df_bound_WB)=="Min.per.year"]<-"MinPerYear"
 
+df_bound <- df_bound %>%
+  mutate(Depth_stratum=ifelse(Depth_stratum=="",NA,Depth_stratum))
+
+
+df_bound_WB <- df_bound_WB %>%
+  mutate(Depth_stratum=as.character(Depth_stratum)) %>%
+  mutate(RefCond=as.character(RefCond)) %>%
+  mutate(H.G=as.character(H.G)) %>%
+  mutate(G.M=as.character(G.M)) %>%
+  mutate(M.P=as.character(M.P)) %>%
+  mutate(P.B=as.character(P.B)) %>%
+  mutate(Worst=as.character(Worst))
+  
+  
+
 dbpath<-"../efs/ekostat/ekostat_info.db"
 db <- dbConnect(SQLite(), dbname=dbpath)
 df_WB<-dbGetQuery(conn=db,"Select * from WB_info")

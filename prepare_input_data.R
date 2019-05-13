@@ -23,7 +23,7 @@ dfcmsmdi<-dfcmsmdi %>%
          obspoint,institution,MSMDI) %>%
   filter(WB_ID!="")
 
-df_SMHI<-read.table(file="data/from_SMHI/WATERS_export.txt",header=T,stringsAsFactors=F,sep="\t")
+df_SMHI<-read.table(file="data/from_SMHI/WATERS_export_20190508.txt",header=T,stringsAsFactors=F,sep="\t")
 
 df_SMHI <- df_SMHI %>%
   select(WB_ID,EU_CD=VISS_EU_CD,station=Station,date=Date,year,month,time=Time,station_depth,sali,biovol,institution=Institution,depth=DEPH,
