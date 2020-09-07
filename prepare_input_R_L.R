@@ -47,8 +47,8 @@
     filter(WB_ID!="")  %>%
     mutate(year=as.numeric(substr(date,1,2)),
            month=as.numeric(substr(date,4,5))) %>%
-    mutate(year=year+ifelse(year>checkyr,1900,2000),
-           date=paste0(ifelse(year>checkyr,"19","20"),date))
+    mutate(date=paste0(ifelse(year>checkyr,"19","20"),date),
+           year=year+ifelse(year>checkyr,1900,2000))
   
   rm(list=c("r1","r2","r3","r4"))
   
