@@ -1,5 +1,5 @@
-db1<-"C:/Data/GitHub/efs/ekostat/ekostat_C.db"
-db2<-"output/ekostat_C.db"
+db1<-"C:/Data/GitHub/efs/ekostat/ekostat_CX.db"
+db2<-"C:/Data/GitHub/efs/ekostat/ekostat_C.db"
 
 readdb <- function(dbname,strSQL){
   db <- dbConnect(SQLite(), dbname=dbname)
@@ -54,4 +54,4 @@ df2diff <- df2 %>%
   filter(select==1) %>%
   select(-select)
 
-write.table(df2diff,file="ekostat_differences_20190513.csv",sep=";",row.names=F)
+write.table(df2diff,file="ekostat_differences_20190515.csv",sep=";",row.names=F)

@@ -9,13 +9,7 @@ dfcbqi<- read_sas("data/coast_bqi.sas7bdat")            # Coast BQI
 dfcmsmdi<- read_sas("data/coast_msmdi.sas7bdat")        # Coast MSMDI
 dfcwater<- read_sas("data/coast_watersamples.sas7bdat") # Coast water samples
 
-# dfc<-bind_rows(dfcbio,dfcbqi,dfcmsmdi,dfcwater) %>%
-#   mutate(Year=year(date),Month=month(date)) %>%
-#   select(WB_ID=MS_CD,station,date,year=Year,month=Month,
-#          time,station_depth,sali,biovol,
-#          obspoint,institution,BQI,depth,MSMDI,
-#          DIN,DIP,TN,TP,chla,secchi,HypoxicAreaPct,O2_bot) %>%
-#   filter(WB_ID!="")
+
 
 dfcmsmdi<-dfcmsmdi %>%
   mutate(Year=year(date),Month=month(date)) %>%
