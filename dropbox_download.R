@@ -133,7 +133,7 @@ folderdropbox<-"/WATERS_tools/tables_for_waters_tool/Data tables for shiny/"
 folderlocal <- "./data/dropbox/"
 
 for(file in filelist){
-  
+  cat(paste0("downloading ",file,"\n"))
   rc <- dropbox_download(folderdropbox,folderlocal,file,dropboxtoken="")
   
 }
