@@ -38,12 +38,12 @@ CalculateIndicator <-
     xvar <- switch(Indicator,
                    CoastBQI          = df$BQI,
                    CoastMSMDI        = df$MSMDI,
-                   CoastChla         = df$chla,
-                   CoastChlaEQR      = df$chla,
-                   CoastBiovol       = df$biovol,
-                   CoastBiovolEQR    = df$biovol,
-                   CoastSecchi       = df$secchi,
-                   CoastSecchiEQR    = df$secchi,
+                   CoastChla         = df$Chla,
+                   CoastChlaEQR      = df$Chla,
+                   CoastBiovol       = df$Biovol,
+                   CoastBiovolEQR    = df$Biovol,
+                   CoastSecchi       = df$SecchiDepth,
+                   CoastSecchiEQR    = df$SecchiDepth,
                    CoastDINwinter    = df$DIN,
                    CoastDINwinterEQR = df$DIN,
                    CoastDIPwinter    = df$DIP,
@@ -56,19 +56,18 @@ CalculateIndicator <-
                    CoastTPsummerEQR  = df$TP,
                    CoastTPwinter     = df$TP,
                    CoastTPwinterEQR  = df$TP,
-                   CoastOxygen       = df$O2,
-                   CoastBottomOxygen = df$O2_bot,
+                   CoastBottomOxygen = df$O2bottom,
                    CoastHypoxicArea  = df$HypoxicAreaPct,
-                   LakeBiovol        = df$biovol,
-                   LakeBiovolEQR     = df$biovol,
-                   LakeChla          = df$chla,
-                   LakeChlaEQR       = df$chla,
-                   LakePropCyano     = df$Proportion_cyanobacteria,
-                   LakePropCyanoEQR  = df$Proportion_cyanobacteria,
+                   LakeBiovol        = df$Biovol,
+                   LakeBiovolEQR     = df$Biovol,
+                   LakeChla          = df$Chla,
+                   LakeChlaEQR       = df$Chla,
+                   LakePropCyano     = df$ProportionCyanobacteria,
+                   LakePropCyanoEQR  = df$ProportionCyanobacteria,
                    LakePTI           = df$PhytoplanktonTrophicIndex,
                    LakePTIEQR        = df$PhytoplanktonTrophicIndex,
-                   LakeNphytspec     = df$Nspecies_phytoplankton,
-                   LakeNphytspecEQR  = df$Nspecies_phytoplankton,
+                   LakeNphytspec     = df$NspeciesPhytoplankton,
+                   LakeNphytspecEQR  = df$NspeciesPhytoplankton,
                    LakeTMIEQR        = df$TrophicMacrophyteIndex,
                    LakeIPS           = df$BenthicDiatomsIPS,
                    LakeIPSEQR        = df$BenthicDiatomsIPS,
@@ -81,8 +80,9 @@ CalculateIndicator <-
                    LakeAindexW5      = df$AindexW5,
                    LakeEindexW3      = df$EindexW3,
                    LakeTPEQR         = df$TP,
-                   LakeSecchiEQR= df$SecchiDepth,
-                   LakeOxygenSummer  = df$O2_bot,
+                   LakeSecchiEQR     = df$SecchiDepth,
+                   LakeOxygenSummer  = df$O2bottom,
+                   LakepHchange      = df$pH,
                    RiverIPS          = df$BenthicDiatomsIPS,
                    RiverIPSEQR       = df$BenthicDiatomsIPS,
                    RiverPctPT        = df$BenthicDiatomsPctPT,
@@ -97,7 +97,8 @@ CalculateIndicator <-
                    RiverVIXsm        = df$VIXsm,
                    RiverVIXmorf      = df$VIXsm,
                    RiverTPEQR        = df$TP,
-                   RiverOxygenSummer = df$O2_bot
+                   RiverOxygenSummer = df$O2bottom,
+                   RiverpHchange     = df$pH
     )
     df <- mutate(df,xvar=xvar)
     # Associating indicators with transformation from observations
@@ -122,7 +123,6 @@ CalculateIndicator <-
                     CoastTPsummerEQR  = AggregateEQR_year,
                     CoastTPwinter     = Aggregate_year, # Replace with Max_year?
                     CoastTPwinterEQR  = AggregateEQR_year, # Replace with MaxEQR_year?
-                    CoastOxygen       = OxygenTest2,
                     CoastBottomOxygen = OxygenLowerQuartile,
                     CoastHypoxicArea  = Aggregate_year,
                     LakeBiovol        = Aggregate_period,
@@ -147,8 +147,9 @@ CalculateIndicator <-
                     LakeAindexW5      = AggregateEQRtrunc_N_period,
                     LakeEindexW3      = AggregateEQRtrunc_N_period,
                     LakeTPEQR         = Aggregate_period_P_EQR,
-                    LakeSecchiEQR= Aggregate_period_N_EQR,
+                    LakeSecchiEQR     = Aggregate_period_N_EQR,
                     LakeOxygenSummer  = Min_year,
+                    LakepHchange      = Aggregate_period_RC,
                     RiverIPS          = Aggregate_period,
                     RiverIPSEQR       = Aggregate_period_N_EQR,
                     RiverPctPT        = Aggregate_period,
@@ -156,14 +157,15 @@ CalculateIndicator <-
                     RiverACID         = Aggregate_period,
                     RiverACIDEQR      = Aggregate_period_N_EQR,
                     RiverASPTEQR      = Aggregate_period_N_EQR,
-                    RiverDJEQR        = Aggregate_period_N_EQR5,
+                    RiverDJEQR        = Aggregate_period_RefMax_EQR,
                     RiverMISAEQR      = Aggregate_period_N_EQR,
                     RiverVIX          = Aggregate_period,
                     RiverVIXh         = Aggregate_period,
                     RiverVIXsm        = Aggregate_period,
                     RiverVIXmorf      = Aggregate_period,
                     RiverTPEQR        = Aggregate_period_P_EQR,
-                    RiverOxygenSummer = Min_year
+                    RiverOxygenSummer = Min_year,
+                    RiverpHchange     = Aggregate_period_RC
     )
     # Assigning transformations for measurements to obtain normal distributed variates
     g_fun <- switch(Indicator,
@@ -187,7 +189,6 @@ CalculateIndicator <-
                     CoastTPsummerEQR  = log,
                     CoastTPwinter     = log,
                     CoastTPwinterEQR  = log,
-                    CoastOxygen       = identity,
                     CoastBottomOxygen = identity,
                     CoastHypoxicArea  = logit_w_replace,
                     LakeBiovol        = log,
@@ -212,8 +213,9 @@ CalculateIndicator <-
                     LakeAindexW5      = logit_w_replace,
                     LakeEindexW3      = logit_w_replace,
                     LakeTPEQR         = log,
-                    LakeSecchiEQR= identity,
+                    LakeSecchiEQR     = identity,
                     LakeOxygenSummer  = identity,
+                    LakepHchange      = identity,
                     RiverIPS          = identity,
                     RiverIPSEQR       = identity,
                     RiverPctPT        = logit_w_replace,
@@ -228,7 +230,8 @@ CalculateIndicator <-
                     RiverVIXsm        = logit_w_replace,
                     RiverVIXmorf      = logit_w_replace,
                     RiverTPEQR        = log,
-                    RiverOxygenSummer = identity
+                    RiverOxygenSummer = identity,
+                    RiverpHchange     = identity
     )    
     # Assigning inverse transformations of g_fun
     g_fun_inv <- switch(Indicator,
@@ -252,7 +255,6 @@ CalculateIndicator <-
                         CoastTPsummerEQR  = exp,
                         CoastTPwinter     = exp,
                         CoastTPwinterEQR  = exp,
-                        CoastOxygen       = identity,
                         CoastBottomOxygen = identity,
                         CoastHypoxicArea  = plogis,
                         LakeBiovol        = exp,
@@ -277,8 +279,9 @@ CalculateIndicator <-
                         LakeAindexW5      = plogis,
                         LakeEindexW3      = plogis,
                         LakeTPEQR         = exp,
-                        LakeSecchiEQR= identity,
+                        LakeSecchiEQR     = identity,
                         LakeOxygenSummer  = identity,
+                        LakepHchange      = identity,
                         RiverIPS          = identity,
                         RiverIPSEQR       = identity,
                         RiverPctPT        = plogis,
@@ -287,17 +290,18 @@ CalculateIndicator <-
                         RiverACIDEQR      = identity,
                         RiverASPTEQR      = identity,
                         RiverDJEQR        = identity,
-                        RiverMISAEQR      = identity,
+                        RiverMISAEQR      = identity,  # Not in recent BG
                         RiverVIX          = plogis,
                         RiverVIXh         = plogis,
                         RiverVIXsm        = plogis,
                         RiverVIXmorf      = plogis,
                         RiverTPEQR        = exp,
-                        RiverOxygenSummer = identity
+                        RiverOxygenSummer = identity,
+                        RiverpHchange     = identity
     ) 
     # Add month and year to df
-    df <- mutate(df,month=month(date))
-    df <- mutate(df,year=year(date))
+    df <- mutate(df,month=month(Date))
+    df <- mutate(df,year=year(Date))
     # Switch year for winter months (Nov+Dec) to include together with (Jan+Feb)
     if (Indicator %in% c("CoastDINwinterEQR","CoastDIPwinterEQR","CoastTNwinter","CoastTNwinterEQR","CoastTPwinter","CoastTPwinterEQR")) {
       df <- mutate(df,year=ifelse(month %in% c(11,12),year+1,year))
@@ -306,58 +310,63 @@ CalculateIndicator <-
     df <- Filter_df(df,MonthInclude,startyear,endyear) 
     # setting RefCond depending on salinity for indicators with salinity correction
     RefCond <- mat.or.vec(nrow(df), 1)
+    # default is to have the RefCond on position 1 i parameter vector, unless RefCond is parameterised (see below)
+    RefCond <- ParameterVector[1]
     if (Indicator %in% c("CoastDINwinterEQR","CoastDIPwinterEQR","CoastTNsummerEQR","CoastTPsummerEQR","CoastTNwinterEQR","CoastTPwinterEQR")) {
-      df <- filter(df,!is.na(sali))
-      df$sali <- ifelse(df$sali<2,2,df$sali) # Set RefCond for sali<2 to the value at sali=2
-      df$sali <- ifelse(df$sali>ParameterVector[3],ParameterVector[3],df$sali) # Set RefCond for sali higher than outer to the value at sali=outer boundary
-      RefCond <- ParameterVector[1]+ParameterVector[2]*df$sali
+      df <- filter(df,!is.na(Sali))
+      df$sali <- ifelse(df$Sali<2,2,df$Sali) # Set RefCond for sali<2 to the value at sali=2
+      df$sali <- ifelse(df$Sali>ParameterVector[3],ParameterVector[3],df$Sali) # Set RefCond for sali higher than outer to the value at sali=outer boundary
+      RefCond <- ParameterVector[1]+ParameterVector[2]*df$Sali
     }
     if (Indicator %in% c("CoastChlaEQR","CoastBiovolEQR","CoastSecchiEQR")) {
-      # Calculate RefCond for Chla, Biovol or Secchi
+       # Calculate RefCond for Chla, Biovol or Secchi
       if (ParameterVector[5] == 0) { # Use RefCond table value in ParameterVector[4]
         RefCond <- ParameterVector[4]
       } 
       else { # Use RefCond derived from TNref
-        df <- filter(df,!is.na(sali)) 
-        df$sali <- ifelse(df$sali<2,2,df$sali) # Set RefCond for sali<2 to the value at sali=2
-        df$sali <- ifelse(df$sali>ParameterVector[3],ParameterVector[3],df$sali) # Set RefCond for sali higher than outer to the value at sali=outer boundary
+        df <- filter(df,!is.na(Sali)) 
+        df$sali <- ifelse(df$Sali<2,2,df$Sali) # Set RefCond for sali<2 to the value at sali=2
+        df$sali <- ifelse(df$Sali>ParameterVector[3],ParameterVector[3],df$Sali) # Set RefCond for sali higher than outer to the value at sali=outer boundary
         # Calculate RefCond for TN summer
-        RefCond <- ParameterVector[1]+ParameterVector[2]*df$sali
+        RefCond <- ParameterVector[1]+ParameterVector[2]*df$Sali
         RefCond <- ParameterVector[4]+ParameterVector[5]*RefCond^ParameterVector[6]
       }
-     }
-     df <- mutate(df,RefCond = RefCond)
-    
+    }
     # setting RefCond and MaxCond depending for lake and river indicators, i.e. RefCond in ParameterVector[1] and MaxCond in ParameterVector[2]
     if (Indicator %in% c("LakeBiovolEQR","LakeChlaEQR","LakePTIEQR","LakeNphytspecEQR","LakeTMIEQR","LakeIPSEQR","LakeACIDEQR","LakeASPTEQR","LakeBQIEQR","LakeMILAEQR","LakeEQR8","LakeAindexW5","LakeEindexW3","LakeTPEQR","LakeSecchiEQR",
                          "RiverIPSEQR","RiverASPTEQR","RiverDJEQR","RiverMISAEQR","RiverTPEQR")) {
-      RefCond <- mat.or.vec(nrow(df), 1)
-      MaxCond <- mat.or.vec(nrow(df), 1)
-      for (i in 1:nrow(df)) {
-        RefCond[i] <- ParameterVector[1]
-        MaxCond[i] <- ParameterVector[2]
+      RefCond <- ParameterVector[1]
+      MaxCond <- ParameterVector[2]
+
+      # adjusting RefCond to pHref - pHref is contained in ParameterVector[2], pH threshold in ParameterVector[3] and adjustment in ParameterVector[4-5]
+      if (Indicator %in% c("LakeNphytspecEQR")) {
+        if (ParameterVector[2]<ParameterVector[3]) RefCond <- ParameterVector[4]+ParameterVector[5]*ParameterVector[2]
       }
-      df <- mutate(df,RefCond = RefCond,MaxCond = MaxCond) 
+      # adjusting RefCond to pHref, if ACID is less than 5.8 (ParameterVector[1]). The other restriction ensures ACIDref<5.8. CHECK
+      if (Indicator %in% c("LakeACIDEQR","RiverACIDEQR")) {
+        if (Aggregate_period(df)$periodmean<ParameterVector[1] & ParameterVector[2]<ParameterVector[3]) RefCond <- ParameterVector[4]+ParameterVector[5]*ParameterVector[2]
+      }
+      # adjusting RefCond to pHref, if MILA is less than good (ParameterVector[1]). The other restriction ensures ACIDref<5.8. CHECK
+      if (Indicator %in% c("LakeMILAEQR")) {
+        if (Aggregate_period(df)$periodmean<ParameterVector[1]*0.68 & ParameterVector[2]<ParameterVector[3]) RefCond <- ParameterVector[4]+ParameterVector[5]*ParameterVector[2]
+      }
+      # Add MaxCond for the freshwater indicators
+      df <- mutate(df,MaxCond = MaxCond) 
     }
-    # Adding H-G boundary to data for TPI calculations of EQR
-    if (Indicator %in% c("LakeTPIEQR")) {
-      HG_boundary <- mat.or.vec(nrow(df), 1)
-      for (i in 1:nrow(df)) {HG_boundary[i] <- ParameterVector[2]}
-      df <- mutate(df,HG_boundary = HG_boundary) 
-    }
+    # Add RefCond for all indicators
+    df <- mutate(df,RefCond = RefCond) 
     # Calculate number of years, stations, months, institutions and combinations thereof in df 
     ndf <- DF_Ncalculation(df)
     # Return from function if no observations for calculation
     if (ndf$n_obs == 0) return(list(result_code=-90))
     # Check data requirements and flag if not fulfilled
     # Check min number year with at least MinObsPerYear per year
-    flag <- ifelse(sum((df %>% group_by(year) %>% summarise(n_year=length(xvar)))$n_year>MinObsList$MinObsPerYear-1)<MinObsList$MinYear,-2,flag)
+    flag <- ifelse(sum((df %>% group_by(year) %>% summarise(n_year=length(xvar),.groups='drop'))$n_year>MinObsList$MinObsPerYear-1)<MinObsList$MinYear,-2,flag)
     # Check min number of years
     flag <- ifelse(ndf$n_year<MinObsList$MinYear,-1,flag)
     # Estimate mean of the transformed observation for simulation
-    alpha <- df %>% group_by(year) %>% summarise(mean = mean(g_fun(xvar),na.rm=TRUE))
+    alpha <- df %>% group_by(year) %>% summarise(mean = mean(g_fun(xvar),na.rm=TRUE),.groups='drop')
     # Calculate indicator
-    
     mu_indicator <- f_fun(df)
     # Return from function if no observations in Jan-May (result_code=-91) or Jun-Dec (result_code=-92) or less than 5 obs for BQI (result_code=-93)
     if (mu_indicator$error_code != 0) return(list(result_code=mu_indicator$error_code))
@@ -369,11 +378,7 @@ CalculateIndicator <-
     # simulation loop - simres contains the residuals from n_iter simulations
     for (isim in 1:n_iter) {
       # simulate variations in the random factors using the data structure
-      if (Indicator == "CoastOxygen") {
-        simulobs <- SetVector_IndicatorSimO2(alpha$mean,ndf,var_list,df,length(MonthInclude))
-      } else {
-        simulobs <- SetVector_IndicatorSim(alpha$mean,ndf,var_list,df,length(MonthInclude))
-      }
+      simulobs <- SetVector_IndicatorSim(alpha$mean,ndf,var_list,df,length(MonthInclude))
       # backtransform simulations from transformed domain to original domain
       simulobs <- g_fun_inv(simulobs)
       # add simulated observation to df
@@ -420,15 +425,10 @@ CalculateIndicator <-
                          upper_5  = apply(simresyear,1,quantile,probs=0.975,na.rm=TRUE),
                          upper_1  = apply(simresyear,1,quantile,probs=0.995,na.rm=TRUE))
 
-    stns<-df %>% 
-      arrange(station) %>%
-      distinct(station)
-    stns <- paste(stns$station,collapse = ",")
+    # return df for display
+    df_return <- data.frame(EU_CD=df$EU_CD,Vatten_ID=df$Vatten_ID,Station=df$Station,Date=df$Date,year=df$year,month=df$month,xvar=df$xvar,RefCond=df$RefCond)
     
-    RefCondAvg<- mean(df$RefCond,na.rm=T)
-
-    res <- list(period=period,annual=annual,indicator_sim=simres,result_code=flag,nobs=ndf$n_obs,stns=stns,RefCondAvg=RefCondAvg)
-      
+    res <- list(period=period,annual=annual,indicator_sim=simres,obstable=df_return,result_code=flag)
     return(res)
   }
 
@@ -468,6 +468,9 @@ CalculateIndicatorType <-
     # Return from function if no information from other WBs is available for calculation
     if (n_WB == 0)  return(list(result_code=-80))
     # Organise data from uncertainty objects into vectors and matrices
+    EU_CD <- vector("character",n_WB)
+    Vatten_ID <- vector("character",n_WB)
+    RefCond <- vector("numeric",n_WB)
     periodWB_mean <- vector("numeric",n_WB)
     periodWB_stderr <- vector("numeric",n_WB)
     annualWB_year <- vector("numeric",n_WByear)
@@ -476,6 +479,9 @@ CalculateIndicatorType <-
     #    annual_unc_list <- matrix(n_year,n_WB)
     icount <- 0
     for (i in 1:n_WB) {
+      EU_CD[i] <- as.character(unc_list[[i]]$obstable$EU_CD[1])
+      Vatten_ID[i] <- as.character(unc_list[[i]]$obstable$Vatten_ID[1])
+      RefCond[i] <- mean(unc_list[[i]]$obstable$RefCond)
       periodWB_mean[i] <- unc_list[[i]]$period$mean
       periodWB_stderr[i] <- unc_list[[i]]$period$stderr
       for (j in 1:n_yearlist[i]) {
@@ -489,7 +495,7 @@ CalculateIndicatorType <-
     period_mean <- mean(periodWB_mean)
     period_stderr <- sqrt(stderr_aggr(periodWB_stderr)^2+var_list$V_WBperiod*(1-n_WB/ntype_WB))
     annual_WB <- data.frame(year=annualWB_year,mean=annualWB_yearmean,stderr=annualWB_yearstderr)
-    annual <- annual_WB %>% group_by(year) %>% summarise(mean = mean(mean),stderr = sqrt(stderr_aggr(periodWB_stderr)^2+var_list$V_WBannual*(1-n_WB/ntype_WB)))
+    annual <- annual_WB %>% group_by(year) %>% summarise(mean = mean(mean),stderr = sqrt(stderr_aggr(periodWB_stderr)^2+var_list$V_WBannual*(1-n_WB/ntype_WB)),.groups='drop')
     # Simulate distribution - the aggregate across WBs is assumed normal distributed
     simres <- rnorm(n_iter,mean=period_mean,sd=period_stderr)
     # calculate information for uncertainty object
@@ -508,7 +514,10 @@ CalculateIndicatorType <-
                          upper_5  = qnorm(0.975,annual$mean,annual$stderr),
                          upper_1  = qnorm(0.995,annual$mean,annual$stderr))
     
-    res <- list(period=period,annual=annual,indicator_sim=simres,result_code=flag)
+    # return df for display
+    df_return <- data.frame(EU_CD=EU_CD,Vatten_ID=Vatten_ID,mean=periodWB_mean,RefCond=RefCond)
+    
+    res <- list(period=period,annual=annual,indicator_sim=simres,obstable=df_return,result_code=flag)
     return(res)
   }    
 

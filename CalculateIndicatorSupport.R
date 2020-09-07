@@ -30,15 +30,15 @@
 DF_Ncalculation <-
   function(df) {
            n_obs <- nrow(df)
-           n_station <- length(unique(df$station))
-           n_obspoint <- nrow(unique(data.frame(df$station,df$obspoint)))
+           n_station <- length(unique(df$Station))
+           n_obspoint <- nrow(unique(data.frame(df$Station,df$Obspoint_ID)))
            n_year <- length(unique(df$year))
            n_month <- length(unique(df$month))
            n_yearmonth <- nrow(unique(data.frame(df$year,df$month)))
-           n_stationyear <- nrow(unique(data.frame(df$station,df$year)))
-           n_stationmonth <- nrow(unique(data.frame(df$station,df$month)))
-           n_stationdate <- nrow(unique(data.frame(df$station,df$date)))
-           n_institution <- length(unique(df$institution))
+           n_stationyear <- nrow(unique(data.frame(df$Station,df$year)))
+           n_stationmonth <- nrow(unique(data.frame(df$Station,df$month)))
+           n_stationdate <- nrow(unique(data.frame(df$Station,df$Date)))
+           n_institution <- length(unique(df$Institution))
            res <- list(n_obs=n_obs,n_station=n_station,n_obspoint=n_obspoint,n_year=n_year,n_month=n_month,n_yearmonth=n_yearmonth,n_stationyear=n_stationyear,n_stationmonth=n_stationmonth,n_stationdate=n_stationdate,n_institution=n_institution)
            return(res)
   }
@@ -71,48 +71,17 @@ SetVector_IndicatorSim <-
     Random_institution <- SimVector(n_list$n_institution,var_list$V_institution)
     Random_replication <- SimVector(n_list$n_obs,var_list$V_replication)
     
-    simulvector_station <- Random_station[match(df$station,unique(df$station))]
-    simulvector_obspoint <- Random_obspoint[row.match(data.frame(df$station,df$obspoint),unique(data.frame(df$station,df$obspoint)))]
+    simulvector_station <- Random_station[match(df$Station,unique(df$Station))]
+    simulvector_obspoint <- Random_obspoint[row.match(data.frame(df$Station,df$Obspoint_ID),unique(data.frame(df$Station,df$Obspoint_ID)))]
     simulvector_year <- Random_year[match(df$year,unique(df$year))]
     simulvector_yearmonth <- Random_yearmonth[row.match(data.frame(df$year,df$month),unique(data.frame(df$year,df$month)))]
-    simulvector_stationyear <- Random_stationyear[row.match(data.frame(df$station,df$year),unique(data.frame(df$station,df$year)))]
-    simulvector_stationmonth <- Random_stationmonth[row.match(data.frame(df$station,df$month),unique(data.frame(df$station,df$month)))]
-    simulvector_stationdate <- Random_stationdate[row.match(data.frame(df$station,df$date),unique(data.frame(df$station,df$date)))]
-    simulvector_institution <- Random_institution[match(df$institution,unique(df$institution))]
+    simulvector_stationyear <- Random_stationyear[row.match(data.frame(df$Station,df$year),unique(data.frame(df$Station,df$year)))]
+    simulvector_stationmonth <- Random_stationmonth[row.match(data.frame(df$Station,df$month),unique(data.frame(df$Station,df$month)))]
+    simulvector_stationdate <- Random_stationdate[row.match(data.frame(df$Station,df$Date),unique(data.frame(df$Station,df$Date)))]
+    simulvector_institution <- Random_institution[match(df$Institution,unique(df$Institution))]
     simulvector_obs <- mean[match(df$year,unique(df$year))]+simulvector_station+simulvector_obspoint+simulvector_year+simulvector_yearmonth+simulvector_stationyear+simulvector_stationmonth+simulvector_stationdate+simulvector_institution+Random_replication
     return(simulvector_obs)
   }
-
-
-#' Function SetVector_IndicatorSimO2 simulates the error structure from the data frame for the oxygen indicator 
-#' @param mean The mean of the distribution
-#' @param var_list List of variance components
-#' @param beta Variance from the lognormal distributions
-#' @param df Dataframe with the error structure to be simulated
-SetVector_IndicatorSimO2 <-
-  function(mean,n_list,var_list,df,seasons) {
-    Random_station <- SimVector(n_list$n_station,var_list$V_station)
-    Random_obspoint <- SimVector(n_list$n_obspoint,var_list$V_obspoint)
-    Random_year <- SimVector(n_list$n_year,var_list$V_year*(1-n_list$n_year/6)) # Correction for discrete distribution of year
-    Random_yearmonth <- SimVector(n_list$n_yearmonth,var_list$V_yearmonth*(1-n_list$n_yearmonth/6/seasons)) # Correction for discrete distribution of yearxmonth
-    Random_stationyear <- SimVector(n_list$n_stationyear,var_list$V_stationyear)
-    Random_stationmonth <- SimVector(n_list$n_stationmonth,var_list$V_stationmonth)
-    Random_stationdate <- SimVector(n_list$n_stationdate,var_list$V_stationdate)
-    Random_institution <- SimVector(n_list$n_institution,var_list$V_institution)
-    Random_replication <- SimVector(n_list$n_obs,var_list$V_replication)
-    
-    simulvector_station <- Random_station[match(df$station,unique(df$station))]
-    simulvector_obspoint <- Random_obspoint[row.match(data.frame(df$station,df$obspoint),unique(data.frame(df$station,df$obspoint)))]
-    simulvector_year <- Random_year[match(df$year,unique(df$year))]
-    simulvector_yearmonth <- Random_yearmonth[row.match(data.frame(df$year,df$month),unique(data.frame(df$year,df$month)))]
-    simulvector_stationyear <- Random_stationyear[row.match(data.frame(df$station,df$year),unique(data.frame(df$station,df$year)))]
-    simulvector_stationmonth <- Random_stationmonth[row.match(data.frame(df$station,df$month),unique(data.frame(df$station,df$month)))]
-    simulvector_stationdate <- Random_stationdate[row.match(data.frame(df$station,df$date),unique(data.frame(df$station,df$date)))]
-    simulvector_institution <- Random_institution[match(df$institution,unique(df$institution))]
-    simulvector_obs <- df$xvar+simulvector_station+simulvector_obspoint+simulvector_year+simulvector_yearmonth+simulvector_stationyear+simulvector_stationmonth+simulvector_stationdate+simulvector_institution+Random_replication
-    return(simulvector_obs)
-  }
-
 
 
 #' Function Filter_df add year and month variables and removes missing observations 
@@ -220,11 +189,11 @@ stderr_aggr <-
 
 #' Function RefCond_LakeTP calculates the reference condition for TP in µg/l as function of absorbance, turbidity, and altitude
 RefCond_LakeTP <-
-  function(AbsF,Altitude,Turbidity=0,AugustOnly = FALSE) {
-    if (Turbidity == 0) logP=1.76+0.338*log10(AbsF)-0.213*log10(Altitude)
+  function(AbsF,Altitude,Turbidity,AugustOnly = FALSE) {
+    if (is.na(Turbidity)) logP=1.76+0.338*log10(AbsF)-0.213*log10(Altitude)
     else logP=1.425+0.162*log10(AbsF)-0.128*log10(Altitude)+0.482*log10(Turbidity)
     if (AugustOnly) {
-      if (Turbidity == 0) logP=2.247+0.530*log10(AbsF)-0.339*log10(Altitude)
+      if (is.na(Turbidity)) logP=2.247+0.530*log10(AbsF)-0.339*log10(Altitude)
       else logP=1.437+0.250*log10(AbsF)-0.120*log10(Altitude)+0.536*log10(Turbidity)
     }
     return(10**logP)
@@ -232,8 +201,8 @@ RefCond_LakeTP <-
 
 #' Function RefCond_RiverTP calculates the reference condition for TP in µg/l as function of absorbance, altitude and lake depth
 RefCond_RiverTP <-
-  function(AbsF,Altitude,CationConc=0) {
-    if (CationConc == 0) logP=1.380+0.240*log10(AbsF)-0.0143*sqrt(Altitude)
+  function(AbsF,Altitude,CationConc) {
+    if (is.na(CationConc)) logP=1.380+0.240*log10(AbsF)-0.0143*sqrt(Altitude)
     else logP=1.533+0.240*log10(CationConc)+0.301*log10(AbsF)-0.012*sqrt(Altitude)
     return(10**logP)
   }
@@ -244,3 +213,65 @@ RefCond_LakeSecchiDepth <-
     logSD=0.678-0.116*log10(AbsF)-0.471*log10(RefCondChla)
     return(10**logSD)
   }
+
+#' pHModel1 calculates the pH reference condition from pCO2, TOC and ANC
+#' kparms contains
+#'      [1]: pKh
+#'      [2]: pK1
+#'      [3]: pK2
+#'      [4]: pKw
+#'      [5]: Site density
+#'      [6]: pKa1
+#'      [7]: pKa2
+#'      [8]: pKa3
+#'      [9]: beta 5.6
+RefCond_pH <- function(DOC,ANC,kparms=c(1.45,6.35,10.33,14,7,3.8,4.7,5.5,6.3)) {
+  kh=10^-kparms[1]
+  k1=10^-kparms[2]
+  k2=10^-kparms[3]
+  kw=10^kparms[4]
+  sitedens=kparms[5]
+  Ka1=10^-kparms[6]
+  Ka2=10^-kparms[7]
+  Ka3=10^-kparms[8]
+  beta56=kparms[9]
+  pHout <- vector("numeric",length(ANC))
+  rcoout <- vector("numeric",length(ANC))
+  pCO2 <- (116.6*DOC+440.8)*10^-6   # Equation from Jens F. spreadsheet
+  for (i in 1:length(ANC)) {
+    ANCpH=-10000
+    pH=3
+    dpH=0.001
+    n=0
+    fel=100
+    while (n<6000 & abs(ANC[i]-ANCpH)>0.0001) {
+      H=10^-pH
+      OH=10^(-kparms[4])/H
+      HCO3=k1*kh*pCO2[i]/H
+      CO3=HCO3*k2/H
+      Atot=10^-6*(DOC[i]*sitedens/3)
+      H3A=Atot/(1+(Ka1/H)+(Ka1*Ka2/H^2)+(Ka1*Ka2*Ka3/H^3))
+      H2A=Ka1*H3A/H
+      HA=Ka2*H2A/H
+      A=Ka3*HA/H
+      ANCpH=10^3*(OH+HCO3+2*CO3+H2A+2*HA+3*A-H)
+      pHout[i]=pH
+      rcoout[i]=(H2A+2*HA+3*A)*10^6   # Organic anions in µeq/L
+      if (sign(fel) != sign(ANC[i]-ANCpH)) pHref=lastpH
+      lastpH=pH
+      if (n==0) {
+        pH=9
+        pHref=3
+      }
+      else {
+        pH=(pH+pHref)/2
+      }
+      #pH=pH+dpH
+      n=n+1
+      fel=ANC[i]-ANCpH
+    }
+    
+  }
+  return(pHout)
+}
+

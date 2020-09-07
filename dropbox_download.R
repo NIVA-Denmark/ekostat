@@ -139,5 +139,13 @@ for(file in filelist){
 }
 #file<-filelist[1]
 
+filelist<-c("DB_tables for data input to shinyapp.xlsx",
+            "Structured tables for shinyapp and R.xlsx")
+folderdropbox<-"/WATERS_tools/tables_for_waters_tool/"
+folderlocal <- "./data/"
 
+for(file in filelist){
+  cat(paste0("downloading ",file,"\n"))
+  rc <- dropbox_download(folderdropbox,folderlocal,file,dropboxtoken="")
+}
 
