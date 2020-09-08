@@ -42,8 +42,8 @@
   
   dfriver<-bind_rows(r1,r2,r3,r4) %>%
     filter(Vatten_ID!="")  %>%
-    mutate(Year=as.numeric(substr(Date,1,4)),
-           Month=as.numeric(substr(Date,6,7)))
+    mutate(year=as.numeric(substr(Date,1,4)),
+           month=as.numeric(substr(Date,6,7)))
   
   rm(list=c("r1","r2","r3","r4"))
   
@@ -73,7 +73,7 @@
   
   # ---------------------------- WB info -------------------------------
   
-  df_WB <- read_dropbox("SE_WB.csv")
+  df_WB2 <- read_dropbox("SE_WB.csv")
   
 # -------------------   
     # namesl<-c(names(l1),names(l2),names(l3),names(l4),names(l5),names(l6)) 

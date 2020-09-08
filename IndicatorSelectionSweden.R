@@ -337,17 +337,25 @@ CalculateIndicator <-
                          "RiverIPSEQR","RiverASPTEQR","RiverDJEQR","RiverMISAEQR","RiverTPEQR")) {
       RefCond <- ParameterVector[1]
       MaxCond <- ParameterVector[2]
-      #browser()
+ 
+       
       # adjusting RefCond to pHref - pHref is contained in ParameterVector[2], pH threshold in ParameterVector[3] and adjustment in ParameterVector[4-5]
       if (Indicator %in% c("LakeNphytspecEQR")) {
+        # Check if pHref is a value - if not exit  
+        if (is.na(ParameterVector[2])) return(list(result_code=-91))
         if (ParameterVector[2]<ParameterVector[3]) RefCond <- ParameterVector[4]+ParameterVector[5]*ParameterVector[2]
       }
       # adjusting RefCond to pHref, if ACID is less than 5.8 (ParameterVector[1]). The other restriction ensures ACIDref<5.8. CHECK
+      if (is.na(Aggregate_period(df)$periodmean)) return(list(result_code=-90)) # If there is no data to perform check
       if (Indicator %in% c("LakeACIDEQR","RiverACIDEQR")) {
+        # Check if pHref is a value - if not exit  
+        if (is.na(ParameterVector[2])) return(list(result_code=-91))
         if (Aggregate_period(df)$periodmean<ParameterVector[1] & ParameterVector[2]<ParameterVector[3]) RefCond <- ParameterVector[4]+ParameterVector[5]*ParameterVector[2]
       }
       # adjusting RefCond to pHref, if MILA is less than good (ParameterVector[1]). The other restriction ensures ACIDref<5.8. CHECK
       if (Indicator %in% c("LakeMILAEQR")) {
+        # Check if pHref is a value - if not exit  
+        if (is.na(ParameterVector[2])) return(list(result_code=-91))
         if (Aggregate_period(df)$periodmean<ParameterVector[1]*0.68 & ParameterVector[2]<ParameterVector[3]) RefCond <- ParameterVector[4]+ParameterVector[5]*ParameterVector[2]
       }
       # Add MaxCond for the freshwater indicators
@@ -426,7 +434,6 @@ CalculateIndicator <-
                          upper_1  = apply(simresyear,1,quantile,probs=0.995,na.rm=TRUE))
 
     # return df for display
-    #browser()
     df_return <- data.frame(EU_CD=df$EU_CD,Vatten_ID=df$Vatten_ID,Station=df$Station,Date=df$Date,year=df$year,month=df$month,xvar=df$xvar,RefCond=df$RefCond)
     
     res <- list(period=period,annual=annual,indicator_sim=simres,obstable=df_return,result_code=flag)

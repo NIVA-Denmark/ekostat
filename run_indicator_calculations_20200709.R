@@ -40,7 +40,7 @@ wblistC<-df_WB %>%
 
 wblistL<-df_WB2 %>% 
   distinct(WaterCategory,Vatten_ID,Type) %>%
-  #filter(WB_ID=="WA85181457") %>%
+  #filter(Vatten_ID=="WA22455661") %>%
   filter(WaterCategory=="LW") %>%
   mutate(CLR="Lake")
 

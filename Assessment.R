@@ -181,6 +181,7 @@ Assessment <-
             }
             
             if(res$result_code %in% c(0,-1,-2)){
+              
               if(iInd=="LakeChla"){
                 #save Chl to a global variable, used later by LakeSecchi
                 LakeChlaGlobal<<-res$period$mean

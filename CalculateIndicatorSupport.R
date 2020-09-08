@@ -239,38 +239,39 @@ RefCond_pH <- function(DOC,ANC,kparms=c(1.45,6.35,10.33,14,7,3.8,4.7,5.5,6.3)) {
   rcoout <- vector("numeric",length(ANC))
   pCO2 <- (116.6*DOC+440.8)*10^-6   # Equation from Jens F. spreadsheet
   for (i in 1:length(ANC)) {
-    ANCpH=-10000
-    pH=3
-    dpH=0.001
-    n=0
-    fel=100
-    while (n<6000 & abs(ANC[i]-ANCpH)>0.0001) {
-      H=10^-pH
-      OH=10^(-kparms[4])/H
-      HCO3=k1*kh*pCO2[i]/H
-      CO3=HCO3*k2/H
-      Atot=10^-6*(DOC[i]*sitedens/3)
-      H3A=Atot/(1+(Ka1/H)+(Ka1*Ka2/H^2)+(Ka1*Ka2*Ka3/H^3))
-      H2A=Ka1*H3A/H
-      HA=Ka2*H2A/H
-      A=Ka3*HA/H
-      ANCpH=10^3*(OH+HCO3+2*CO3+H2A+2*HA+3*A-H)
-      pHout[i]=pH
-      rcoout[i]=(H2A+2*HA+3*A)*10^6   # Organic anions in µeq/L
-      if (sign(fel) != sign(ANC[i]-ANCpH)) pHref=lastpH
+    if (is.na(ANC[i]) | is.na(DOC[i])) {pHout[i]=NA}
+    else {
+      ANCpH=-10000
+      pH=3
       lastpH=pH
-      if (n==0) {
-        pH=9
-        pHref=3
+      n=0
+      fel=100
+      while (n<6000 & abs(ANC[i]-ANCpH)>0.0001) {
+        H=10^-pH
+        OH=10^(-kparms[4])/H
+        HCO3=k1*kh*pCO2[i]/H
+        CO3=HCO3*k2/H
+        Atot=10^-6*(DOC[i]*sitedens/3)
+        H3A=Atot/(1+(Ka1/H)+(Ka1*Ka2/H^2)+(Ka1*Ka2*Ka3/H^3))
+        H2A=Ka1*H3A/H
+        HA=Ka2*H2A/H
+        A=Ka3*HA/H
+        ANCpH=10^3*(OH+HCO3+2*CO3+H2A+2*HA+3*A-H)
+        pHout[i]=pH
+        rcoout[i]=(H2A+2*HA+3*A)*10^6   # Organic anions in µeq/L
+        if (sign(fel) != sign(ANC[i]-ANCpH)) pHref=lastpH
+        lastpH=pH
+        if (n==0) {
+          pH=9
+          pHref=3
+        }
+        else {
+          pH=(pH+pHref)/2
+        }
+        n=n+1
+        fel=ANC[i]-ANCpH
       }
-      else {
-        pH=(pH+pHref)/2
-      }
-      #pH=pH+dpH
-      n=n+1
-      fel=ANC[i]-ANCpH
     }
-    
   }
   return(pHout)
 }
