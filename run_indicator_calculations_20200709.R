@@ -32,11 +32,17 @@ wblistC<-df_WB %>%
 
 
 
-wblistL<-df_WB %>% 
-  distinct(CLR,WB_ID,Type) %>%
-  filter(WB_ID=="WA85181457") %>%
-  filter(CLR=="Lake") %>%
-  rename(Vatten_ID=WB_ID)
+# wblistL<-df_WB %>% 
+#   distinct(CLR,WB_ID,Type) %>%
+#   #filter(WB_ID=="WA85181457") %>%
+#   filter(CLR=="Lake") %>%
+#   rename(Vatten_ID=WB_ID)
+
+wblistL<-df_WB2 %>% 
+  distinct(WaterCategory,Vatten_ID,Type) %>%
+  #filter(WB_ID=="WA85181457") %>%
+  filter(WaterCategory=="LW") %>%
+  mutate(CLR="Lake")
 
 wblistR<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
