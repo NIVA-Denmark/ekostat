@@ -127,7 +127,10 @@ filelist<-c("LakeBenthicInvertebrates.csv",
             "RiverFish.csv",
             "RiverPhytobenthos.csv",
             "RiverWQ.csv",
-            "SE_WB.csv")
+            "SE_WB.csv",
+            "SE_County.csv",
+            "SE_Municipality.csv"
+            )
 
 folderdropbox<-"/WATERS_tools/tables_for_waters_tool/Data tables for shiny/"
 folderlocal <- "./data/dropbox/"

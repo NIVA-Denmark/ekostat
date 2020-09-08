@@ -15,9 +15,8 @@
     df <- read.table(paste0(dropbox,filename),
                      sep=",",header=T,stringsAsFactors=F,comment.char="",quote='"')
     # check column names
-    names(df)[names(df)=="Station"] <- "station"
-    names(df)[names(df)=="Vatten_ID"] <- "WB_ID"
-    names(df)[names(df)=="Date"] <- "date"
+    names(df)[names(df)=="station"] <- "Station"
+    #names(df)[names(df)=="Vatten_ID"] <- "WB_ID"
     return(df)
   }
 # ------------ Lake data -------------------------------------------------
@@ -29,11 +28,9 @@
   l6 <- read_dropbox("LakeWQ.csv")
   
   dflake<-bind_rows(l1,l2,l3,l4,l5,l6) %>%
-    filter(WB_ID!="") %>%
-    mutate(year=as.numeric(substr(date,1,2)),
-           month=as.numeric(substr(date,4,5))) %>%
-    mutate(date=paste0(ifelse(year>checkyr,"19","20"),date),
-           year=year+ifelse(year>checkyr,1900,2000))
+    filter(Vatten_ID!="") %>%
+    mutate(year=as.numeric(substr(Date,1,4)),
+           month=as.numeric(substr(Date,6,7)))
   
   rm(list=c("l1","l2","l3","l4","l5","l6"))
   
@@ -44,11 +41,9 @@
   r4 <- read_dropbox("RiverWQ.csv")
   
   dfriver<-bind_rows(r1,r2,r3,r4) %>%
-    filter(WB_ID!="")  %>%
-    mutate(year=as.numeric(substr(date,1,2)),
-           month=as.numeric(substr(date,4,5))) %>%
-    mutate(date=paste0(ifelse(year>checkyr,"19","20"),date),
-           year=year+ifelse(year>checkyr,1900,2000))
+    filter(Vatten_ID!="")  %>%
+    mutate(Year=as.numeric(substr(Date,1,4)),
+           Month=as.numeric(substr(Date,6,7)))
   
   rm(list=c("r1","r2","r3","r4"))
   
@@ -76,6 +71,11 @@
   dflake <- dflake %>% left_join(dfYearPeriod,by="year")
   dfriver <- dfriver %>% left_join(dfYearPeriod,by="year")
   
+  # ---------------------------- WB info -------------------------------
+  
+  df_WB <- read_dropbox("SE_WB.csv")
+  
+# -------------------   
     # namesl<-c(names(l1),names(l2),names(l3),names(l4),names(l5),names(l6)) 
   # namesl<-sort(unique(namesl))
   # namesl

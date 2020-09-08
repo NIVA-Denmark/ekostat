@@ -27,16 +27,22 @@ logR<-"log_R1.txt"
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
   filter(CLR=="Coast") %>% 
-  filter(WB_ID=="WA72333352")
+  filter(WB_ID=="WA72333352") %>%
+  rename(Vatten_ID=WB_ID)
+
 
 
 wblistL<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
-  filter(CLR=="Lake") 
+  filter(WB_ID=="WA85181457") %>%
+  filter(CLR=="Lake") %>%
+  rename(Vatten_ID=WB_ID)
 
 wblistR<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
-  filter(CLR=="River") 
+  filter(CLR=="River") %>%
+  rename(Vatten_ID=WB_ID)
+
 
 #List of periods to be assessed from prepare_input_data.R
 
@@ -46,6 +52,7 @@ wblistR<-df_WB %>%
 
 #--------------------------------------------------------------------------------------
 ind<-df_indicators %>% 
+  filter(Water_type=="Lakes") %>%
   select(Indicator) %>%
   #filter(Indicator %in% c("CoastChla","CoastChlaEQR"))
  filter(!Indicator %in% c("RiverpHchange"))
