@@ -36,14 +36,26 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     
     CLR<-wblist$CLR[iWB]
     typology<-wblist$Type[iWB]
+    extrainfo <- list()
+    
     if(CLR=="Coast"){
       typology<-TypeLeadingZero(typology) # Add leading zero to typology
       typology_varcomp<-typology
     }else{
+      #browser()
+      if(CLR=="Lake"){
+        extrainfo$altitude<- wblist$LakeAltitude[iWB]
+      }
+      if(CLR=="River"){
+        extrainfo$Ajo <-  wblist$AreaAgriculturePct[iWB]   
+        extrainfo$Pjo <- wblist$TPagricultureRefCond[iWB]
+        
+      }
       typology_varcomp<-substr(typology,1,1)
     }
-        
-        AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp)
+          
+    
+        AssessmentResults <- Assessment(CLR,WB,df_periods,dfselect, nsim = nSimMC, IndList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp,extrainfo)
     
     ETA <- Sys.time() + (Sys.time() - start_time)*(wbcount-iWB) /(1+iWB-iStart)
     cat(paste0(" done at: ",Sys.time(),"  (elapsed: ",round(Sys.time() - start_time,4),") ETA=",ETA,"\n"))
@@ -61,7 +73,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
     #if(!is.na(resAvg)){
     if(typeof(resAvg)=="list"){
       if(nrow(resAvg)>0){
-      WB <- resAvg %>% group_by(Vatten_ID,Type,Period,Region,Typename) %>% summarise()
+      WB <- resAvg %>% group_by(WB_ID,Type,Period,Region,Typename) %>% summarise()
       dbWriteTable(conn = db, name = "resMC", resMC, overwrite=bOVR,append=bAPP, row.names=FALSE)
       dbWriteTable(conn = db, name = "resYear", resYear, overwrite=bOVR,append=bAPP, row.names=FALSE)
       dbWriteTable(conn = db, name = "WB", WB, overwrite=bOVR,append=bAPP, row.names=FALSE)
@@ -98,14 +110,14 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
 #' 
 #'             
 Assessment <-
-  function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp) {
+  function(CLR,WB,plist,df_all,nsim=1000,IndicatorList,df_bounds,df_bounds_WB,df_indicators,df_variances,df_var,typology,typology_varcomp,extrainfo) {
     #browser()
     pcount<-nrow(plist)
 
     
     
       for(iPeriod in 1:pcount){
-        #dfp <- df_all %>% filter(Vatten_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
+        #dfp <- df_all %>% filter(WB_ID == wblist$WB_ID[iWB],Period == plist$Period[iPeriod])
         dfp <- df_all %>% filter(Period == plist$Period[iPeriod])
         cat(paste0(" [",plist$Period[iPeriod],"] "))
         
@@ -173,7 +185,9 @@ Assessment <-
               res$result_code <- -90
               ErrDesc <- "no data"
             }else{
-              res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,MonthInclude,nsim)
+              
+              
+              res<-IndicatorResults(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,iInd,startyear,endyear,MonthInclude,nsim,extrainfo)
               cat(paste0("    Indicator: ",iInd,"  res=",res$result_code,"\n"))
 
               ErrDesc<-ErrorDescription(res$result_code,BoundsList$MinYear[1],BoundsList$MinPerYear[1])
@@ -181,7 +195,7 @@ Assessment <-
             }
             
             if(res$result_code %in% c(0,-1,-2)){
-              
+              #browser()
               if(iInd=="LakeChla"){
                 #save Chl to a global variable, used later by LakeSecchi
                 LakeChlaGlobal<<-res$period$mean
@@ -191,7 +205,7 @@ Assessment <-
               df_temp<-data.frame(Mean=res$period$mean,StdErr=res$period$stderr,Code=res$result_code)
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$Vatten_ID<-WB
+              df_temp$WB_ID<-WB
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
@@ -199,9 +213,9 @@ Assessment <-
               
               #Observation Count and station list
               
-              df_temp$nobs <-res$nobs
-              df_temp$stns <- res$stns
-              df_temp$RefCondAvg <- res$RefCondAvg
+              df_temp$nobs <-nrow(res$obstable)
+              df_temp$stns <- paste0(res$obstable$Station,collapse=",")
+              df_temp$RefCondAvg <- mean(res$obstable$RefCond,na.rm=T)
 
               if(exists("res_ind")){
                 res_ind<-bind_rows(res_ind,df_temp)
@@ -215,7 +229,7 @@ Assessment <-
               df_temp<-data.frame(Year=res$annual$year,Mean=res$annual$mean,StdErr=res$annual$stderr)
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$Vatten_ID<-WB
+              df_temp$WB_ID<-WB
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
@@ -232,7 +246,7 @@ Assessment <-
               df_temp<-data.frame(Estimate=res$indicator_sim,Code=res$result_code)
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$Vatten_ID<-WB
+              df_temp$WB_ID<-WB
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$sim<-1:nsim
@@ -247,7 +261,7 @@ Assessment <-
               if(res$result_code %in% c(-1,-2)){
                 
                 #ErrDesc<-ErrorDescription(res$result_code,res$MinYear,res$MinPerYear)
-                df_temp<-data.frame(Vatten_ID=WB,
+                df_temp<-data.frame(WB_ID=WB,
                                     Type=typology,
                                     Period=plist$Period[iPeriod],
                                     Indicator=iInd,
@@ -269,7 +283,7 @@ Assessment <-
                                   Code=res$result_code,
                                   Indicator=iInd,
                                   IndSubtype=subtype,
-                                  Vatten_ID=WB,
+                                  WB_ID=WB,
                                   Type=typology,
                                   Period=plist$Period[iPeriod],
                                   Note=ErrDesc,
@@ -295,7 +309,7 @@ Assessment <-
               df_temp$StdErr<-NA
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$Vatten_ID<-WB
+              df_temp$WB_ID<-WB
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$Code<-res$result_code
@@ -307,7 +321,7 @@ Assessment <-
                 res_year<-df_temp
               }
               
-              df_temp<-data.frame(Vatten_ID=WB,
+              df_temp<-data.frame(WB_ID=WB,
                                   Type=typology,
                                   Period=plist$Period[iPeriod],
                                   Indicator=iInd,
@@ -328,7 +342,7 @@ Assessment <-
               df_temp$Code=res$result_code
               df_temp$Indicator<-iInd
               df_temp$IndSubtype<-subtype
-              df_temp$Vatten_ID<-WB
+              df_temp$WB_ID<-WB
               df_temp$Type<-typology
               df_temp$Period<-plist$Period[iPeriod]
               df_temp$sim<-NA #1:nsim
@@ -348,7 +362,7 @@ Assessment <-
           # no matching indicator boundaries - nrow(BoundsList)>0
           #cat(paste0(" -> no boundary values (Indicator: ",iInd,", type:",typology,")\n"))
           #ErrDesc<-"missing boundary values"
-          df_temp<-data.frame(Vatten_ID=WB,
+          df_temp<-data.frame(WB_ID=WB,
                               Type=typology,
                               Period=plist$Period[iPeriod],
                               Indicator=iInd,
@@ -370,17 +384,17 @@ Assessment <-
 
     if(exists("res_ind")){
 
-      res_ind_1<- res_ind %>% left_join(select(df_bounds_WB,Vatten_ID=MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
-                                      by=c("Indicator"="Indicator","Vatten_ID"="Vatten_ID","Type"="Type","IndSubtype"="Depth_stratum")) %>%
+      res_ind_1<- res_ind %>% left_join(select(df_bounds_WB,WB_ID=MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                                      by=c("Indicator"="Indicator","WB_ID"="WB_ID","Type"="Type","IndSubtype"="Depth_stratum")) %>%
         filter(!is.na(RefCond))
       res_ind<- res_ind %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
                                       by=c("Indicator"="Indicator","Type"="Type","IndSubtype"="Depth_stratum"))
       if(nrow(res_ind_1)>0){
         # combinations of WB and indicator with WB-specific boundaries
-        WB_ind <- distinct(res_ind_1,Vatten_ID,Indicator,IndSubtype) %>%
+        WB_ind <- distinct(res_ind_1,WB_ID,Indicator,IndSubtype) %>%
           mutate(drop=1)
         res_ind<- res_ind %>% 
-          left_join(WB_ind,by=c("Vatten_ID","Indicator","IndSubtype")) %>%
+          left_join(WB_ind,by=c("WB_ID","Indicator","IndSubtype")) %>%
           filter(is.na(drop)) %>%
           select(-drop)
         res_ind<-res_ind %>%
@@ -395,10 +409,10 @@ Assessment <-
     res_ind<-GetClass(res_ind)
     
     # Get indicator categories for MC results
-    res_rnd<- res_rnd %>% select(Vatten_ID,Type,Period,Indicator,IndSubtype,sim,Estimate,Code)
+    res_rnd<- res_rnd %>% select(WB_ID,Type,Period,Indicator,IndSubtype,sim,Estimate,Code)
     
-      res_rnd_1<- res_rnd %>% left_join(select(df_bounds_WB,Vatten_ID=MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
-                                      by=c("Indicator"="Indicator","Vatten_ID"="Vatten_ID","Type"="Type","IndSubtype"="Depth_stratum")) %>%
+      res_rnd_1<- res_rnd %>% left_join(select(df_bounds_WB,WB_ID=MS_CD,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst),
+                                      by=c("Indicator"="Indicator","WB_ID"="WB_ID","Type"="Type","IndSubtype"="Depth_stratum")) %>%
         filter(!is.na(RefCond))
       
       res_rnd<- res_rnd %>% left_join(select(df_bounds,Water_type,Indicator,Unit,Months,Depth_stratum,Region,Type,Typename,MinYear,MinPerYear,RefCond,H.G,G.M,M.P,P.B,Worst), 
@@ -407,7 +421,7 @@ Assessment <-
     if(nrow(res_ind_1)>0){
       
       res_rnd<- res_rnd %>% 
-        left_join(WB_ind,by=c("Vatten_ID","Indicator","IndSubtype")) %>%
+        left_join(WB_ind,by=c("WB_ID","Indicator","IndSubtype")) %>%
         filter(is.na(drop)) %>%
         select(-drop)
       res_rnd<-res_rnd %>%
@@ -425,7 +439,7 @@ Assessment <-
                                      by=c("Indicator"))
     #Find counts for each category
     res_rnd_count <- res_rnd %>% filter(!is.na(ClassID)) %>%
-      group_by(Vatten_ID,Period,Type,Indicator,IndSubtype,ClassID) %>% summarise(n=n())
+      group_by(WB_ID,Period,Type,Indicator,IndSubtype,ClassID) %>% summarise(n=n())
     
     # Here we add zeros for ClassIDs which don't occur
     # this ensures that all 5 columns are present after transposing
@@ -436,7 +450,7 @@ Assessment <-
     
       
     res_rnd_distinct <- res_rnd %>% 
-      group_by(Vatten_ID,Period,Type,Indicator,IndSubtype) %>% 
+      group_by(WB_ID,Period,Type,Indicator,IndSubtype) %>% 
       summarise() %>%
       ungroup() %>%
       mutate(X=1) %>%
@@ -447,7 +461,7 @@ Assessment <-
       res_rnd_count <- res_rnd_distinct %>% mutate(n=NA)
     }else{
       res_rnd_count <- res_rnd_distinct %>%
-        left_join(res_rnd_count,by = c("Vatten_ID", "Period", "Type", "Indicator", "IndSubtype", "ClassID"))
+        left_join(res_rnd_count,by = c("WB_ID", "Period", "Type", "Indicator", "IndSubtype", "ClassID"))
     }
     
     res_rnd_count$ClassID<-paste0("C",res_rnd_count$ClassID)
@@ -458,9 +472,9 @@ Assessment <-
     Categories<-c("Bad","Poor","Mod","Good","High","Ref")
     res_rnd <- res_rnd %>% 
       mutate(Class=ifelse(is.na(Class),NA,Categories[ClassID]))
-    res_rnd<-res_rnd %>% select(Vatten_ID,Period,Indicator,IndSubtype,sim,Value,ClassID,Class,EQR)
+    res_rnd<-res_rnd %>% select(WB_ID,Period,Indicator,IndSubtype,sim,Value,ClassID,Class,EQR)
     
-    res_ind<-left_join(res_ind,res_rnd_count,by = c("Vatten_ID", "Type", "Period", "Indicator", "IndSubtype"))
+    res_ind<-left_join(res_ind,res_rnd_count,by = c("WB_ID", "Type", "Period", "Indicator", "IndSubtype"))
     
     res_ind <- res_ind %>% left_join(select(df_indicators,Indicator,QualityElement,QualitySubelement,QEtype),by = "Indicator")
     
@@ -485,7 +499,7 @@ Assessment <-
     res[[1]]<-res_ind 
     res[[2]]<-res_rnd 
     if(!exists("res_err")){
-      res_err<-data.frame(Vatten_ID=NA,Type=NA,Period=NA,Indicator=NA,
+      res_err<-data.frame(WB_ID=NA,Type=NA,Period=NA,Indicator=NA,
                           IndSubtype=NA,Code=NA,Error=NA)
     }
     res[[3]]<-res_err
@@ -653,7 +667,9 @@ VarianceComponents<-function(df_indicators,df_variances,typology,indicator){
 #' IndicatorResults
 #' 
 #' 
-IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,indicator,startyear,endyear,MonthInclude,nsim){
+IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,indicator,startyear,endyear,MonthInclude,nsim,extrainfo){
+  
+  #browser()
   missing <- switch(indicator,0,
                     ChlaEQR      = 0.9,
                     TNsummer     = 50,
@@ -665,17 +681,24 @@ IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,
   # RefCond for TP: Function depends on availability of data (autumn circulation, annual or August)
   if(indicator %in% c("LakeTP","LakeTPEQR")){
     AugustOnly <- length(unique(df$month)) == 1 && unique(df$month)[1] == 8
-    ParameterVector <- c(RefCond_LakeTP(mean(df$Abs_F420,na.rm=TRUE),100,0.6,AugustOnly))
+    ParameterVector <- c(RefCond_LakeTP(mean(df$AbsF420,na.rm=TRUE),extrainfo$altitude,mean(df$Turbidity,na.rm=TRUE),AugustOnly))
   }
   # RefCond for Secchi depth: LakeChla should be second parameter in ParameterVector
   if(indicator %in% c("LakeSecchi","LakeSecchiEQR")){
-    refcond<-RefCond_LakeSecchiDepth(mean(df$Abs_F420,na.rm=TRUE),LakeChlaGlobal)
+    refcond<-RefCond_LakeSecchiDepth(mean(df$AbsF420,na.rm=TRUE),LakeChlaGlobal)
     ParameterVector <- c(refcond,LakeChlaGlobal)
   }
   if(indicator %in% c("RiverTP","RiverTPEQR")){
-    ParameterVector <- c(RefCond_RiverTP(mean(df$Abs_F420,na.rm=TRUE),100,1),rep(0,35))
+    ParameterVector <- c(RefCond_RiverTP(mean(df$AbsF420,na.rm=TRUE),100,mean(df$Ca+df$Mg-0.235*df$Cl,na.rm=TRUE)))
+    Ajo <- extrainfo$Ajo   #  Percentage of land use for agriculture
+    Pjo <- extrainfo$Pjo   #20
+    if (Ajo>10) ParameterVector <- c((Pjo*Ajo*0.5+ParameterVector[1]*(100-Ajo))/100)
   }
   
+  if(indicator %in% c("LakeNphytspecEQR","LakeACIDEQR","LakeMILAEQR","RiverACIDEQR")){
+    pHref <- RefCond_pH(df$TOC,-0.004695-0.374*df$SO4+1.006*(df$Ca+df$Mg+df$Na+df$K)-0.907*df$Cl)
+    ParameterVector[2] <- mean(pHref,na.rm=TRUE)
+  }
   
   
   MinObsList<-GetMinObs(df_bounds,typology,indicator,missing)

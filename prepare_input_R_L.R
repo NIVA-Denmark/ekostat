@@ -73,7 +73,7 @@
   
   # ---------------------------- WB info -------------------------------
   
-  df_WB2 <- read_dropbox("SE_WB.csv")
+  df_WB <- read_dropbox("SE_WB.csv")
   
 # -------------------   
     # namesl<-c(names(l1),names(l2),names(l3),names(l4),names(l5),names(l6)) 

@@ -9,6 +9,7 @@ source("prepare_input_data.R")
 source("read_parameter_files.R")
 source("Assessment.R")
 source("IndicatorSelectionSweden.R")
+source("prepare_input_R_L.R")
 
 
 # Options for indicator calculations
@@ -38,9 +39,9 @@ wblistC<-df_WB %>%
 #   filter(CLR=="Lake") %>%
 #   rename(Vatten_ID=WB_ID)
 
-wblistL<-df_WB2 %>% 
-  distinct(WaterCategory,Vatten_ID,Type) %>%
-  #filter(Vatten_ID=="WA22455661") %>%
+wblistL<-df_WB %>% 
+  distinct(WaterCategory,Vatten_ID,Type,LakeAltitude,AreaAgriculturePct,TPagricultureRefCond) %>%
+  #filter(Vatten_ID=="WA10112639") %>%
   filter(WaterCategory=="LW") %>%
   mutate(CLR="Lake")
 
