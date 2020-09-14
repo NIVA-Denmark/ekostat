@@ -22,8 +22,8 @@ outputdbL<-"output/ekostat_L.db"
 outputdbR<-"output/ekostat_R.db"
 
 logC<-"log_C.txt"
-logL<-"log_L1.txt"
-logR<-"log_R1.txt"
+logL<-"log_L.txt"
+logR<-"log_R.txt"
 
 wblistC<-df_WB %>% 
   distinct(CLR,WB_ID,Type) %>%
@@ -31,24 +31,22 @@ wblistC<-df_WB %>%
   filter(WB_ID=="WA72333352") %>%
   rename(Vatten_ID=WB_ID)
 
-
-
-# wblistL<-df_WB %>% 
-#   distinct(CLR,WB_ID,Type) %>%
-#   #filter(WB_ID=="WA85181457") %>%
-#   filter(CLR=="Lake") %>%
-#   rename(Vatten_ID=WB_ID)
-
 wblistL<-df_WB %>% 
   distinct(WaterCategory,Vatten_ID,Type,LakeAltitude,AreaAgriculturePct,TPagricultureRefCond) %>%
-  #filter(Vatten_ID=="WA10112639") %>%
+  #filter(Vatten_ID=="WA20127072") %>%
   filter(WaterCategory=="LW") %>%
   mutate(CLR="Lake")
 
 wblistR<-df_WB %>% 
-  distinct(CLR,WB_ID,Type) %>%
-  filter(CLR=="River") %>%
-  rename(Vatten_ID=WB_ID)
+  distinct(WaterCategory,Vatten_ID,Type,LakeAltitude,AreaAgriculturePct,TPagricultureRefCond) %>%
+  #filter(Vatten_ID=="WA20127072") %>%
+  filter(WaterCategory=="RW") %>%
+  mutate(CLR="River")
+
+# wblistR<-df_WB %>% 
+#   distinct(CLR,WB_ID,Type) %>%
+#   filter(CLR=="River") %>%
+#   rename(Vatten_ID=WB_ID)
 
 
 #List of periods to be assessed from prepare_input_data.R
@@ -59,16 +57,17 @@ wblistR<-df_WB %>%
 
 #--------------------------------------------------------------------------------------
 ind<-df_indicators %>% 
-  filter(Water_type=="Lakes") %>%
-  select(Indicator) %>%
+  filter(Water_type=="Rivers") %>%
+  select(Indicator)# %>%
   #filter(Indicator %in% c("CoastChla","CoastChlaEQR"))
- filter(!Indicator %in% c("RiverpHchange"))
+ #filter(!Indicator %in% c("RiverpHchange"))
 
 ind<-paste0(ind$Indicator)
+ind<-c("LakePTIEQR")
 
 #AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=F,logfile=logC,iStart=1)
-AssessmentMultiple(wblistL,df_periods,dflake,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile=logL)
-#AssessmentMultiple(wblistR,df_periods,dfr,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile=logR)
+#AssessmentMultiple(wblistL,df_periods,dflake,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile=logL)
+AssessmentMultiple(wblistR,df_periods,dfriver,outputdbR,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile=logR)
 
 
 
