@@ -42,7 +42,7 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
       typology<-TypeLeadingZero(typology) # Add leading zero to typology
       typology_varcomp<-typology
     }else{
-      browser()
+ 
       if(CLR=="Lake"){
         extrainfo$altitude<- wblist$LakeAltitude[iWB]
       }
