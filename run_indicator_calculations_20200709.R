@@ -13,7 +13,7 @@ source("prepare_input_R_L.R")
 
 
 # Options for indicator calculations
-nSimMC <- 2 #1000
+nSimMC <- 1000
 #number of Monte Carlo simulations
 
 
@@ -63,7 +63,7 @@ ind<-df_indicators %>%
  #filter(!Indicator %in% c("RiverpHchange"))
 
 ind<-paste0(ind$Indicator)
-ind<-c("LakePTIEQR")
+#ind<-c("LakePTIEQR")
 
 #AssessmentMultiple(wblistC,df_periods,dfc,outputdbC,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=F,logfile=logC,iStart=1)
 #AssessmentMultiple(wblistL,df_periods,dflake,outputdbL,ind,df_bound,df_bound_WB,df_indicators,df_varcomp,df_var,nSimMC,bReplaceResults=T,logfile=logL)
