@@ -42,14 +42,14 @@ AssessmentMultiple<-function(wblist,df_periods,df,outputdb,IndList,df_bounds,df_
       typology<-TypeLeadingZero(typology) # Add leading zero to typology
       typology_varcomp<-typology
     }else{
-      #browser()
+      browser()
       if(CLR=="Lake"){
         extrainfo$altitude<- wblist$LakeAltitude[iWB]
       }
       if(CLR=="River"){
         extrainfo$Ajo <-  wblist$AreaAgriculturePct[iWB]   
         extrainfo$Pjo <- wblist$TPagricultureRefCond[iWB]
-        
+        if(is.na(extrainfo$Ajo)) extrainfo$Ajo<-0
       }
       typology_varcomp<-substr(typology,1,1)
     }
@@ -669,7 +669,6 @@ VarianceComponents<-function(df_indicators,df_variances,typology,indicator){
 #' 
 IndicatorResults<-function(df,typology,typology_varcomp,df_bounds,df_indicators,df_variances,indicator,startyear,endyear,MonthInclude,nsim,extrainfo){
   
-  #browser()
   missing <- switch(indicator,0,
                     ChlaEQR      = 0.9,
                     TNsummer     = 50,
